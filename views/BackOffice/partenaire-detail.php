@@ -22,14 +22,15 @@ $dons = $donController->readDon('', $id);
 
 $total = 0;
 foreach ($dons as $d) {
-    if ($d['statut'] === 'valide') {
+    if ($d['type_don'] === 'financier' && $d['statut'] === 'valide') {
         $total += $d['montant'];
     }
 }
 $statutsDon = [
     'en_attente' => ['En attente', 'text-bg-warning'],
     'valide' => ['Validé', 'text-bg-success'],
-    'refuse' => ['Refusé', 'text-bg-danger']
+    'refuse' => ['Refusé', 'text-bg-danger'],
+    'recu' => ['Reçu', 'text-bg-info']
 ];
 
 $titre = 'Détail du partenaire';
@@ -53,7 +54,7 @@ include __DIR__ . '/includes/header.php';
                   <dt class="col-sm-4">Statut</dt><dd class="col-sm-8"><span class="badge <?= $partenaire['statut'] === 'actif' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= htmlspecialchars(ucfirst($partenaire['statut'])) ?></span></dd>
                   <dt class="col-sm-4">Depuis le</dt><dd class="col-sm-8"><?= htmlspecialchars(date('d/m/Y', strtotime($partenaire['date_debut']))) ?></dd>
                   <dt class="col-sm-4">Description</dt><dd class="col-sm-8"><?= nl2br(htmlspecialchars($partenaire['description'] ?? '')) ?></dd>
-                  <dt class="col-sm-4">Dons validés</dt><dd class="col-sm-8"><strong><?= htmlspecialchars(number_format($total, 2, ',', ' ')) ?> DT</strong></dd>
+                  <dt class="col-sm-4">Dons financiers validés</dt><dd class="col-sm-8"><strong><?= htmlspecialchars(number_format($total, 2, ',', ' ')) ?> DT</strong></dd>
                 </dl>
               </div>
               <div class="card-footer d-flex gap-2">
@@ -98,7 +99,7 @@ include __DIR__ . '/includes/header.php';
               <div class="card-header"><h3 class="card-title">Dons reçus (<?= count($dons) ?>)</h3></div>
               <div class="card-body p-0 table-responsive">
                 <table class="table table-striped mb-0">
-                  <thead><tr><th>Date</th><th>Donateur</th><th>Montant</th><th>Statut</th></tr></thead>
+                  <thead><tr><th>Date</th><th>Donateur</th><th>Montant / détail</th><th>Statut</th></tr></thead>
                   <tbody>
                     <?php if (empty($dons)): ?>
                       <tr><td colspan="4" class="text-center">Aucun don.</td></tr>
@@ -107,7 +108,7 @@ include __DIR__ . '/includes/header.php';
                       <tr>
                         <td><?= htmlspecialchars(date('d/m/Y', strtotime($d['date_don']))) ?></td>
                         <td><?= $d['utilisateur_nom'] !== null ? htmlspecialchars($d['utilisateur_prenom'] . ' ' . $d['utilisateur_nom']) : '<em>Compte supprimé</em>' ?></td>
-                        <td><?= htmlspecialchars(number_format($d['montant'], 2, ',', ' ')) ?> DT</td>
+                        <td><a href="don-detail.php?id=<?= (int) $d['id'] ?>"><?= htmlspecialchars($donController->detail($d)) ?></a></td>
                         <td><span class="badge <?= $statutsDon[$d['statut']][1] ?>"><?= $statutsDon[$d['statut']][0] ?></span></td>
                       </tr>
                     <?php endforeach; ?>
