@@ -193,3 +193,12 @@ html.lecture-facile *::after {
   animation: none !important;
   transition: none !important;
 }
+
+.text-bg-vivora-corail {
+  background-color: var(--vivora-corail) !important;
+  color: #fff !important;
+}
+
+html.contraste-fort .small-box {
+  border: 2px solid #ffffff;
+}
