@@ -1,109 +1,211 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <title>Utilisateurs par besoin - Vivora Admin</title>
-  </head>
-  <body>
-    <nav>
-      <ul>
-        <li><a href="../FrontOffice/index.html">Voir le site</a></li>
-      </ul>
-      <ul>
-        <li>
-          <a href="#">Hiba Sakka</a>
-          <ul>
-            <li>
-              <p>Hiba Sakka <small>Administratrice</small></p>
-            </li>
-            <li>
-              <a href="../FrontOffice/mon-profil.html">Profil</a>
-              <a href="../FrontOffice/connexion.html">Déconnexion</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Utilisateurs par besoin - Vivora Admin</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap">
+  <link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="assets/css/adminlte.min.css">
+</head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button"><i class="bi bi-list"></i></a>
+          </li>
+          <li class="nav-item d-none d-md-block"><a href="../FrontOffice/index.html" class="nav-link">Voir le site</a></li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown user-menu">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <img src="assets/img/avatar.png" class="user-image rounded-circle shadow" alt="Admin">
+              <span class="d-none d-md-inline">Hiba Sakka</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+              <li class="user-header text-bg-primary">
+                <img src="assets/img/avatar.png" class="rounded-circle shadow" alt="Admin">
+                <p>Hiba Sakka<small>Administratrice</small></p>
+              </li>
+              <li class="user-footer">
+                <a href="../FrontOffice/mon-profil.html" class="btn btn-default btn-flat">Profil</a>
+                <a href="../FrontOffice/connexion.html" class="btn btn-default btn-flat float-end">Déconnexion</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </nav>
 
-    <aside>
-      <a href="dashboard.html">Vivora Admin</a>
-
-      <nav>
-        <ul>
-          <li><a href="dashboard.html">Tableau de bord</a></li>
-          <li>GESTION DES UTILISATEURS</li>
-          <li><a href="utilisateurs-liste.html">Liste des utilisateurs</a></li>
-          <li><a href="utilisateur-ajout.html">Ajouter un utilisateur</a></li>
-          <li><a href="utilisateurs-par-besoin.html">Utilisateurs par besoin</a></li>
-          <li>AUTRES MODULES</li>
-          <li><a href="#">Activités</a></li>
-          <li><a href="#">Rendez-vous</a></li>
-          <li><a href="#">Lieux et événements</a></li>
-          <li><a href="#">Articles</a></li>
-        </ul>
-      </nav>
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a href="dashboard.html" class="brand-link">
+          <img src="assets/img/AdminLTELogo.png" alt="Vivora" class="brand-image opacity-75 shadow">
+          <span class="brand-text fw-light">Vivora Admin</span>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+              <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                  <i class="nav-icon bi bi-speedometer2"></i>
+                  <p>Tableau de bord</p>
+                </a>
+              </li>
+              <li class="nav-header">GESTION DES UTILISATEURS</li>
+              <li class="nav-item">
+                <a href="utilisateurs-liste.html" class="nav-link">
+                  <i class="nav-icon bi bi-people"></i>
+                  <p>Liste des utilisateurs</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="utilisateur-ajout.html" class="nav-link">
+                  <i class="nav-icon bi bi-person-plus"></i>
+                  <p>Ajouter un utilisateur</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="utilisateurs-par-besoin.html" class="nav-link active">
+                  <i class="nav-icon bi bi-universal-access"></i>
+                  <p>Utilisateurs par besoin</p>
+                </a>
+              </li>
+              <li class="nav-header">AUTRES MODULES</li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-activity"></i>
+                  <p>Activités</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-calendar2-heart"></i>
+                  <p>Rendez-vous</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-geo-alt"></i>
+                  <p>Lieux et événements</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-journal-text"></i>
+                  <p>Articles</p>
+                </a>
+              </li>
+          </ul>
+        </nav>
+      </div>
     </aside>
 
-    <main>
-      <h3>Utilisateurs par besoin</h3>
-      <ol>
-        <li><a href="dashboard.html">Accueil</a></li>
-        <li>Par besoin</li>
-      </ol>
-      <h3>Choisir un besoin d'accessibilité</h3>
+    <main class="app-main">
 
-      <form action="utilisateurs-par-besoin.html" method="get">
-        <div>
-          <label for="besoin">Besoin</label>
-          <select id="besoin" name="besoin" required>
-            <option value="">-- Sélectionnez un besoin --</option>
-            <option value="besoin_visuel" selected>Besoin visuel</option>
-            <option value="besoin_moteur">Besoin moteur</option>
-            <option value="besoin_auditif">Besoin auditif</option>
-            <option value="contraste_fort">Contraste fort</option>
-            <option value="lecture_facile">Lecture facile</option>
-            <option value="texte_agrandi">Texte agrandi</option>
-          </select>
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <h3 class="mb-0">Utilisateurs par besoin</h3>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item"><a href="dashboard.html">Accueil</a></li>
+                <li class="breadcrumb-item active">Par besoin</li>
+              </ol>
+            </div>
+          </div>
         </div>
-        <div><button type="submit">Rechercher</button></div>
-      </form>
-      <h3>Besoin visuel : 2 utilisateurs</h3>
+      </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nom</th>
-            <th>E-mail</th>
-            <th>Statut</th>
-            <th>Taille du texte</th>
-            <th>Détail</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>2</td>
-            <td>Amira Ben Salah</td>
-            <td>amira.bensalah@mail.tn</td>
-            <td>Actif</td>
-            <td>Très grande</td>
-            <td><a href="utilisateur-detail.html">Voir</a></td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>Youssef Mansour</td>
-            <td>youssef.mansour@mail.tn</td>
-            <td>Bloqué</td>
-            <td>Grande</td>
-            <td><a href="utilisateur-detail.html">Voir</a></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="app-content">
+        <div class="container-fluid">
+
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3 class="card-title">Choisir un besoin d'accessibilité</h3>
+            </div>
+            <div class="card-body">
+              <form action="utilisateurs-par-besoin.html" method="get" class="row g-2 align-items-end">
+                <div class="col-md-6">
+                  <label for="besoin" class="form-label">Besoin</label>
+                  <select id="besoin" name="besoin" class="form-select" required>
+                    <option value="">-- Sélectionnez un besoin --</option>
+                    <option value="besoin_visuel" selected>Besoin visuel</option>
+                    <option value="besoin_moteur">Besoin moteur</option>
+                    <option value="besoin_auditif">Besoin auditif</option>
+                    <option value="contraste_fort">Contraste fort</option>
+                    <option value="lecture_facile">Lecture facile</option>
+                    <option value="texte_agrandi">Texte agrandi</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Rechercher</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3 class="card-title">Besoin visuel : 2 utilisateurs</h3>
+            </div>
+            <div class="card-body p-0">
+              <table class="table table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>E-mail</th>
+                    <th>Statut</th>
+                    <th>Taille du texte</th>
+                    <th class="text-end">Détail</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2</td>
+                    <td>Amira Ben Salah</td>
+                    <td>amira.bensalah@mail.tn</td>
+                    <td><span class="badge text-bg-success">Actif</span></td>
+                    <td>Très grande</td>
+                    <td class="text-end"><a href="utilisateur-detail.html" class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a></td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>Youssef Mansour</td>
+                    <td>youssef.mansour@mail.tn</td>
+                    <td><span class="badge text-bg-warning">Bloqué</span></td>
+                    <td>Grande</td>
+                    <td class="text-end"><a href="utilisateur-detail.html" class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </main>
 
-    <footer>
-      <div>Module 1 : Hiba Sakka</div>
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">Module 1 : Hiba Sakka</div>
       <strong>© 2026 Vivora</strong> - Groupe Econova - 2A9
     </footer>
-  </body>
+
+  </div>
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/adminlte.min.js"></script>
+</body>
+
 </html>
