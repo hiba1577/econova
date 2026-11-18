@@ -56,13 +56,36 @@ CREATE TABLE don (
     id INT AUTO_INCREMENT PRIMARY KEY,
     utilisateur_id INT DEFAULT NULL,
     partenaire_id INT NOT NULL,
-    montant DECIMAL(10,2) NOT NULL,
+    type_don ENUM('financier','physique') NOT NULL DEFAULT 'financier',
+    montant DECIMAL(10,2) DEFAULT NULL,
     date_don DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    moyen_paiement ENUM('carte','virement','especes') NOT NULL,
+    moyen_paiement ENUM('carte','virement','especes') DEFAULT NULL,
     message TEXT,
-    statut ENUM('en_attente','valide','refuse') NOT NULL DEFAULT 'en_attente',
+    statut ENUM('en_attente','valide','refuse','recu') NOT NULL DEFAULT 'en_attente',
     CONSTRAINT fk_don_utilisateur FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id) ON DELETE SET NULL,
     CONSTRAINT fk_don_partenaire FOREIGN KEY (partenaire_id) REFERENCES partenaire(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE don_physique (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    don_id INT NOT NULL UNIQUE,
+    categorie ENUM('sang','equipement','medicament','service','autre') NOT NULL,
+    groupe_sanguin ENUM('A+','A-','B+','B-','AB+','AB-','O+','O-') DEFAULT NULL,
+    date_disponibilite DATE DEFAULT NULL,
+    type_equipement ENUM('fauteuil_roulant','bequilles','deambulateur','lit_medicalise','appareil_auditif','lunettes','autre') DEFAULT NULL,
+    etat ENUM('neuf','bon','usage') DEFAULT NULL,
+    quantite INT DEFAULT NULL,
+    nom_medicament VARCHAR(100) DEFAULT NULL,
+    date_expiration DATE DEFAULT NULL,
+    emballage_ferme TINYINT(1) DEFAULT NULL,
+    domaine_service ENUM('medecin','infirmier','kinesitherapeute','psychologue','aide_domicile','accompagnement','transport','autre') DEFAULT NULL,
+    disponibilites VARCHAR(100) DEFAULT NULL,
+    heures_par_mois INT DEFAULT NULL,
+    mode_remise ENUM('depot','recuperation') DEFAULT NULL,
+    adresse_recuperation VARCHAR(200) DEFAULT NULL,
+    description TEXT,
+    autre_article TEXT,
+    CONSTRAINT fk_don_physique_don FOREIGN KEY (don_id) REFERENCES don(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO utilisateur (id, nom, prenom, email, mot_de_passe, telephone, role, statut, date_inscription) VALUES
@@ -98,3 +121,21 @@ INSERT INTO don (utilisateur_id, partenaire_id, montant, date_don, moyen_paiemen
 (5, 3, 30.00, '2026-11-01 18:00:00', 'carte', 'Merci pour la livraison.', 'valide'),
 (3, 2, 15.00, '2026-11-08 12:45:00', 'carte', NULL, 'refuse'),
 (5, 1, 75.00, '2026-11-15 17:20:00', 'virement', 'Continuez comme ça.', 'en_attente');
+
+INSERT INTO don (id, utilisateur_id, partenaire_id, type_don, montant, date_don, moyen_paiement, message, statut) VALUES
+(7, 2, 2, 'physique', NULL, '2026-11-10 09:30:00', NULL, NULL, 'en_attente'),
+(8, 5, 2, 'physique', NULL, '2026-10-25 08:45:00', NULL, NULL, 'recu'),
+(9, 3, 1, 'physique', NULL, '2026-11-03 14:10:00', NULL, NULL, 'valide'),
+(10, 2, 1, 'physique', NULL, '2026-11-12 16:00:00', NULL, NULL, 'en_attente'),
+(11, 5, 3, 'physique', NULL, '2026-11-06 11:20:00', NULL, NULL, 'recu'),
+(12, 3, 2, 'physique', NULL, '2026-11-14 10:00:00', NULL, NULL, 'valide'),
+(13, 2, 1, 'physique', NULL, '2026-11-16 18:30:00', NULL, NULL, 'en_attente');
+
+INSERT INTO don_physique (don_id, categorie, groupe_sanguin, date_disponibilite, type_equipement, etat, quantite, nom_medicament, date_expiration, emballage_ferme, domaine_service, disponibilites, heures_par_mois, mode_remise, adresse_recuperation, description, autre_article) VALUES
+(7, 'sang', 'O+', DATE_ADD(CURDATE(), INTERVAL 5 DAY), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(8, 'sang', 'A-', '2026-10-28', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(9, 'equipement', NULL, NULL, 'fauteuil_roulant', 'bon', 1, NULL, NULL, NULL, NULL, NULL, NULL, 'recuperation', '8 rue des Roses, Ariana', NULL, 'Un coussin anti-escarres avec le fauteuil.'),
+(10, 'equipement', NULL, NULL, 'bequilles', 'neuf', 2, NULL, NULL, NULL, NULL, NULL, NULL, 'depot', NULL, NULL, NULL),
+(11, 'medicament', NULL, NULL, NULL, NULL, 3, 'Doliprane 1000 mg', DATE_ADD(CURDATE(), INTERVAL 1 YEAR), 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(12, 'service', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'infirmier', 'lundi,mercredi,samedi', 10, NULL, NULL, 'Infirmière diplômée, 5 ans en soins à domicile.', NULL),
+(13, 'autre', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Un lot de livres en braille et de jeux de société adaptés.', 'Une loupe électronique de lecture.');
