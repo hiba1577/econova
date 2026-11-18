@@ -1,267 +1,131 @@
 <!DOCTYPE html>
 <html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>Créer un compte - Vivora</title>
+  </head>
+  <body>
+    <header id="header">
+      <div>
+        <a href="index.html"><h1>Vivora</h1></a>
 
-<head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Créer un compte - Vivora</title>
-
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
-  <link href="assets/css/main.css" rel="stylesheet">
-</head>
-
-<body class="starter-page-page">
-
-  <header id="header" class="header sticky-top">
-
-    <div class="topbar d-flex align-items-center">
-      <div class="container d-flex justify-content-center justify-content-md-between">
-        <div class="contact-info d-flex align-items-center">
-          <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:contact@vivora.tn">contact@vivora.tn</a></i>
-          <i class="bi bi-phone d-flex align-items-center ms-4"><span>+216 71 000 000</span></i>
-        </div>
-        <div class="social-links d-none d-md-flex align-items-center">
-          <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
-        </div>
-      </div>
-    </div>
-
-    <div class="branding d-flex align-items-center">
-
-      <div class="container position-relative d-flex align-items-center justify-content-between">
-        <a href="index.html" class="logo d-flex align-items-center me-auto">
-          <h1 class="sitename">Vivora</h1>
-        </a>
-
-        <nav id="navmenu" class="navmenu">
+        <nav id="navmenu">
           <ul>
             <li><a href="index.html">Accueil</a></li>
             <li><a href="index.html#services">Services</a></li>
             <li><a href="connexion.html">Connexion</a></li>
           </ul>
-          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
-
-        <a class="cta-btn d-none d-sm-block" href="inscription.html">Créer un compte</a>
-
+        <a href="inscription.html">Créer un compte</a>
       </div>
+    </header>
 
-    </div>
+    <main>
+      <h1>Créer un compte</h1>
+      <p>Rejoignez Vivora en quelques secondes et adaptez le site à vos besoins.</p>
 
-  </header>
-
-  <main class="main">
-
-    <div class="page-title" data-aos="fade">
-      <div class="heading">
-        <div class="container">
-          <div class="row d-flex justify-content-center text-center">
-            <div class="col-lg-8">
-              <h1>Créer un compte</h1>
-              <p class="mb-0">Rejoignez Vivora en quelques secondes et adaptez le site à vos besoins.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <nav class="breadcrumbs">
-        <div class="container">
-          <ol>
-            <li><a href="index.html">Accueil</a></li>
-            <li class="current">Créer un compte</li>
-          </ol>
-        </div>
+      <nav>
+        <ol>
+          <li><a href="index.html">Accueil</a></li>
+          <li>Créer un compte</li>
+        </ol>
       </nav>
-    </div>
 
-    <section id="appointment" class="appointment section">
-
-      <div class="container section-title" data-aos="fade-up">
+      <section id="appointment">
         <h2>Inscription</h2>
         <p>Les champs marqués * sont obligatoires</p>
-      </div>
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
 
         <form action="mon-profil.html" method="post">
-          <div class="row">
-            <div class="col-md-6 form-group">
-              <label class="form-label" for="nom">Nom *</label>
-              <input type="text" name="nom" class="form-control" id="nom" placeholder="Votre nom" required minlength="2" maxlength="50"
-                     pattern="[A-Za-zÀ-ÿ ' -]{2,50}" title="Entre 2 et 50 lettres">
-            </div>
-            <div class="col-md-6 form-group mt-3 mt-md-0">
-              <label class="form-label" for="prenom">Prénom *</label>
-              <input type="text" name="prenom" class="form-control" id="prenom" placeholder="Votre prénom" required minlength="2" maxlength="50"
-                     pattern="[A-Za-zÀ-ÿ ' -]{2,50}" title="Entre 2 et 50 lettres">
-            </div>
+          <div>
+            <label for="nom">Nom *</label>
+            <input type="text" name="nom" id="nom" placeholder="Votre nom" required minlength="2" maxlength="50" pattern="[A-Za-zÀ-ÿ ' -]{2,50}" title="Entre 2 et 50 lettres">
           </div>
-          <div class="row">
-            <div class="col-md-6 form-group mt-3">
-              <label class="form-label" for="email">E-mail *</label>
-              <input type="email" name="email" class="form-control" id="email" placeholder="nom@mail.tn" required>
-            </div>
-            <div class="col-md-6 form-group mt-3">
-              <label class="form-label" for="telephone">Téléphone</label>
-              <input type="tel" name="telephone" class="form-control" id="telephone" placeholder="8 chiffres"
-                     pattern="[0-9]{8}" title="8 chiffres">
-            </div>
+          <div>
+            <label for="prenom">Prénom *</label>
+            <input type="text" name="prenom" id="prenom" placeholder="Votre prénom" required minlength="2" maxlength="50" pattern="[A-Za-zÀ-ÿ ' -]{2,50}" title="Entre 2 et 50 lettres">
           </div>
-          <div class="row">
-            <div class="col-md-6 form-group mt-3">
-              <label class="form-label" for="mot_de_passe">Mot de passe *</label>
-              <input type="password" name="mot_de_passe" class="form-control" id="mot_de_passe" placeholder="8 caractères minimum" required minlength="8"
-                     pattern="(?=.*[A-Z])(?=.*[0-9]).{8,}" title="8 caractères, une majuscule et un chiffre">
-            </div>
-            <div class="col-md-6 form-group mt-3">
-              <label class="form-label" for="confirmation">Confirmer le mot de passe *</label>
-              <input type="password" name="confirmation" class="form-control" id="confirmation" placeholder="Retapez le mot de passe" required minlength="8">
-            </div>
+          <div>
+            <label for="email">E-mail *</label>
+            <input type="email" name="email" id="email" placeholder="nom@mail.tn" required>
           </div>
-
-          <h4 class="mt-5">Mon profil d'accessibilité</h4>
+          <div>
+            <label for="telephone">Téléphone</label>
+            <input type="tel" name="telephone" id="telephone" placeholder="8 chiffres" pattern="[0-9]{8}" title="8 chiffres">
+          </div>
+          <div>
+            <label for="mot_de_passe">Mot de passe *</label>
+            <input type="password" name="mot_de_passe" id="mot_de_passe" placeholder="8 caractères minimum" required minlength="8" pattern="(?=.*[A-Z])(?=.*[0-9]).{8,}" title="8 caractères, une majuscule et un chiffre">
+          </div>
+          <div>
+            <label for="confirmation">Confirmer le mot de passe *</label>
+            <input type="password" name="confirmation" id="confirmation" placeholder="Retapez le mot de passe" required minlength="8">
+          </div>
+          <h4>Mon profil d'accessibilité</h4>
           <p>Ces choix adaptent l'affichage du site. Vous pouvez les changer à tout moment.</p>
-
-          <div class="row">
-            <div class="col-md-4 form-group mt-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="besoin_visuel" id="besoin_visuel" value="1">
-                <label class="form-check-label" for="besoin_visuel"><i class="bi bi-eye"></i> Besoin visuel</label>
-              </div>
-            </div>
-            <div class="col-md-4 form-group mt-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="besoin_moteur" id="besoin_moteur" value="1">
-                <label class="form-check-label" for="besoin_moteur"><i class="bi bi-person-wheelchair"></i> Besoin moteur</label>
-              </div>
-            </div>
-            <div class="col-md-4 form-group mt-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="besoin_auditif" id="besoin_auditif" value="1">
-                <label class="form-check-label" for="besoin_auditif"><i class="bi bi-ear"></i> Besoin auditif</label>
-              </div>
-            </div>
+          <div>
+            <input type="checkbox" name="besoin_visuel" id="besoin_visuel" value="1">
+            <label for="besoin_visuel">Besoin visuel</label>
           </div>
-
-          <div class="row">
-            <div class="col-md-4 form-group mt-3">
-              <label class="form-label" for="taille_texte">Taille du texte</label>
-              <select name="taille_texte" id="taille_texte" class="form-select">
-                <option value="normal" selected>Normale</option>
-                <option value="grand">Grande</option>
-                <option value="tres-grand">Très grande</option>
-              </select>
-            </div>
-            <div class="col-md-4 form-group mt-3 d-flex align-items-end">
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" name="contraste_fort" id="contraste_fort" value="1">
-                <label class="form-check-label" for="contraste_fort">Contraste fort</label>
-              </div>
-            </div>
-            <div class="col-md-4 form-group mt-3 d-flex align-items-end">
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" name="lecture_facile" id="lecture_facile" value="1">
-                <label class="form-check-label" for="lecture_facile">Lecture facile</label>
-              </div>
-            </div>
+          <div>
+            <input type="checkbox" name="besoin_moteur" id="besoin_moteur" value="1">
+            <label for="besoin_moteur">Besoin moteur</label>
           </div>
-
-          <div class="mt-4">
-            <div class="text-center"><button type="submit" class="btn btn-primary rounded-pill px-5 py-2">Créer mon compte</button></div>
-            <p class="text-center mt-3">Vous avez déjà un compte ? <a href="connexion.html">Se connecter</a></p>
+          <div>
+            <input type="checkbox" name="besoin_auditif" id="besoin_auditif" value="1">
+            <label for="besoin_auditif">Besoin auditif</label>
           </div>
+          <div>
+            <label for="taille_texte">Taille du texte</label>
+            <select name="taille_texte" id="taille_texte">
+              <option value="normal" selected>Normale</option>
+              <option value="grand">Grande</option>
+              <option value="tres-grand">Très grande</option>
+            </select>
+          </div>
+          <div>
+            <input type="checkbox" name="contraste_fort" id="contraste_fort" value="1">
+            <label for="contraste_fort">Contraste fort</label>
+          </div>
+          <div>
+            <input type="checkbox" name="lecture_facile" id="lecture_facile" value="1">
+            <label for="lecture_facile">Lecture facile</label>
+          </div>
+          <div><button type="submit">Créer mon compte</button></div>
+          <p>Vous avez déjà un compte ? <a href="connexion.html">Se connecter</a></p>
         </form>
+      </section>
+    </main>
 
+    <footer id="footer">
+      <div>
+        <a href="index.html">Vivora</a>
+        <p>Esprit, Ariana</p>
+        <p>Tunisie</p>
+        <p><strong>Téléphone :</strong> +216 71 000 000</p>
+        <p><strong>E-mail :</strong> contact@vivora.tn</p>
       </div>
-
-    </section>
-
-  </main>
-
-  <footer id="footer" class="footer light-background">
-
-    <div class="container footer-top">
-      <div class="row gy-4">
-        <div class="col-lg-4 col-md-6 footer-about">
-          <a href="index.html" class="logo d-flex align-items-center">
-            <span class="sitename">Vivora</span>
-          </a>
-          <div class="footer-contact pt-3">
-            <p>Esprit, Ariana</p>
-            <p>Tunisie</p>
-            <p class="mt-3"><strong>Téléphone :</strong> <span>+216 71 000 000</span></p>
-            <p><strong>E-mail :</strong> <span>contact@vivora.tn</span></p>
-          </div>
-        </div>
-
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Liens utiles</h4>
-          <ul>
-            <li><a href="index.html">Accueil</a></li>
-            <li><a href="inscription.html">Créer un compte</a></li>
-            <li><a href="connexion.html">Connexion</a></li>
-            <li><a href="mon-profil.html">Mon profil</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-3 col-md-3 footer-links">
-          <h4>Nos services</h4>
-          <ul>
-            <li><a href="index.html#services">Profils et accessibilité</a></li>
-            <li><a href="index.html#services">Activités adaptées</a></li>
-            <li><a href="index.html#services">Rendez-vous</a></li>
-            <li><a href="index.html#services">Lieux et événements</a></li>
-            <li><a href="index.html#services">Conseils et communauté</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-3 col-md-3 footer-links">
-          <h4>Groupe Econova</h4>
-          <ul>
-            <li>Classe 2A9</li>
-            <li>Esprit 2026-2027</li>
-            <li>Projet Technologies Web</li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">Vivora</strong> <span>Tous droits réservés</span></p>
-      <div class="credits">
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-      </div>
-    </div>
-
-  </footer>
-
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <div id="preloader"></div>
-
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-
-  <script src="assets/js/main.js"></script>
-
-</body>
-
+      <h4>Liens utiles</h4>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="inscription.html">Créer un compte</a></li>
+        <li><a href="connexion.html">Connexion</a></li>
+        <li><a href="mon-profil.html">Mon profil</a></li>
+      </ul>
+      <h4>Nos services</h4>
+      <ul>
+        <li><a href="index.html#services">Profils et accessibilité</a></li>
+        <li><a href="index.html#services">Activités adaptées</a></li>
+        <li><a href="index.html#services">Rendez-vous</a></li>
+        <li><a href="index.html#services">Lieux et événements</a></li>
+        <li><a href="index.html#services">Conseils et communauté</a></li>
+      </ul>
+      <h4>Groupe Econova</h4>
+      <ul>
+        <li>Classe 2A9</li>
+        <li>Esprit 2026-2027</li>
+        <li>Projet Technologies Web</li>
+      </ul>
+      <p>© Copyright <strong>Vivora</strong> Tous droits réservés</p>
+    </footer>
+  </body>
 </html>
