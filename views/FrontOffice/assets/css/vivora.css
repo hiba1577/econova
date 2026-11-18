@@ -1,0 +1,325 @@
+:root {
+  --vivora-fonce: #123B3A;
+  --vivora-principal: #1F7A72;
+  --vivora-clair: #7FCFC2;
+  --vivora-pale: #E3EFEA;
+  --vivora-creme: #F6F4EE;
+  --vivora-corail: #E07A5F;
+
+  --heading-color: #123B3A;
+  --accent-color: #1F7A72;
+  --nav-color: #123B3A;
+  --nav-hover-color: #1F7A72;
+  --nav-dropdown-hover-color: #1F7A72;
+}
+
+.light-background {
+  --background-color: #E3EFEA;
+}
+
+body {
+  background-color: var(--vivora-creme);
+}
+
+.header .topbar {
+  background-color: var(--vivora-fonce);
+}
+
+.header .cta-btn {
+  background: var(--vivora-corail);
+}
+
+.header .cta-btn:hover {
+  background: #c9654b;
+}
+
+.hero .why-box {
+  background: var(--vivora-principal);
+}
+
+.btn-vivora {
+  background-color: var(--vivora-principal);
+  border-color: var(--vivora-principal);
+  color: #fff;
+}
+
+.btn-vivora:hover,
+.btn-vivora:focus {
+  background-color: var(--vivora-fonce);
+  border-color: var(--vivora-fonce);
+  color: #fff;
+}
+
+.btn-outline-vivora {
+  border: 1px solid var(--vivora-principal);
+  color: var(--vivora-principal);
+  background: transparent;
+}
+
+.btn-outline-vivora:hover,
+.btn-outline-vivora:focus {
+  background-color: var(--vivora-principal);
+  color: #fff;
+}
+
+.badge-vivora {
+  background-color: var(--vivora-clair);
+  color: var(--vivora-fonce);
+}
+
+.formulaire-vivora {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  border-top: 4px solid var(--vivora-principal);
+  box-shadow: 0 4px 20px rgba(18, 59, 58, 0.08);
+}
+
+.formulaire-vivora.zone-danger {
+  border-top-color: var(--vivora-corail);
+}
+
+.formulaire-vivora h3 {
+  font-size: 1.3rem;
+  color: var(--vivora-fonce);
+}
+
+.erreur-champ {
+  color: #b3261e;
+  font-size: 0.875rem;
+  min-height: 1.2em;
+  margin-top: 4px;
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  border-color: var(--vivora-principal);
+  box-shadow: 0 0 0 0.2rem rgba(31, 122, 114, 0.25);
+}
+
+.form-check-input:checked {
+  background-color: var(--vivora-principal);
+  border-color: var(--vivora-principal);
+}
+
+.carte-publicite,
+.carte-partenaire {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(18, 59, 58, 0.08);
+  border-bottom: 3px solid var(--vivora-clair);
+}
+
+.carte-partenaire {
+  padding: 25px;
+}
+
+.carte-publicite img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.carte-publicite h3,
+.carte-publicite h4 {
+  font-size: 1.2rem;
+}
+
+.logo-partenaire {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.logo-partenaire.grand {
+  width: 110px;
+  height: 110px;
+}
+
+.logo-vide {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--vivora-pale);
+  color: var(--vivora-principal);
+  font-size: 1.8rem;
+}
+
+.logo-vide.grand {
+  font-size: 3rem;
+}
+
+.tableau-vivora thead th {
+  background-color: var(--vivora-fonce);
+  color: #fff;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--vivora-corail);
+  outline-offset: 2px;
+}
+
+html.texte-grand {
+  font-size: 112.5%;
+}
+
+html.texte-grand body,
+html.texte-grand p,
+html.texte-grand li,
+html.texte-grand label,
+html.texte-grand td,
+html.texte-grand th,
+html.texte-grand .form-control,
+html.texte-grand .form-select,
+html.texte-grand .btn {
+  font-size: 1.12rem;
+}
+
+html.texte-tres-grand {
+  font-size: 125%;
+}
+
+html.texte-tres-grand body,
+html.texte-tres-grand p,
+html.texte-tres-grand li,
+html.texte-tres-grand label,
+html.texte-tres-grand td,
+html.texte-tres-grand th,
+html.texte-tres-grand .form-control,
+html.texte-tres-grand .form-select,
+html.texte-tres-grand .btn {
+  font-size: 1.3rem;
+}
+
+html.contraste-fort {
+  --background-color: #000000;
+  --default-color: #ffffff;
+  --heading-color: #ffffff;
+  --accent-color: #ffd60a;
+  --surface-color: #000000;
+  --contrast-color: #000000;
+  --nav-color: #ffffff;
+  --nav-hover-color: #ffd60a;
+  --nav-mobile-background-color: #000000;
+  --nav-dropdown-background-color: #000000;
+  --nav-dropdown-color: #ffffff;
+  --bs-body-bg: #000000;
+  --bs-body-color: #ffffff;
+}
+
+html.contraste-fort body,
+html.contraste-fort .header,
+html.contraste-fort .header .branding,
+html.contraste-fort .header .topbar,
+html.contraste-fort .light-background,
+html.contraste-fort .section,
+html.contraste-fort .footer,
+html.contraste-fort .formulaire-vivora,
+html.contraste-fort .carte-publicite,
+html.contraste-fort .carte-partenaire,
+html.contraste-fort .page-title,
+html.contraste-fort .hero .why-box,
+html.contraste-fort .hero .icon-box,
+html.contraste-fort .services .service-item {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+html.contraste-fort .hero img {
+  display: none;
+}
+
+html.contraste-fort a {
+  color: #ffd60a;
+  text-decoration: underline;
+}
+
+html.contraste-fort .text-muted,
+html.contraste-fort .form-text,
+html.contraste-fort .small {
+  color: #ffffff !important;
+}
+
+html.contraste-fort .form-control,
+html.contraste-fort .form-select {
+  background-color: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+html.contraste-fort .btn-vivora,
+html.contraste-fort .header .cta-btn {
+  background: #ffd60a !important;
+  color: #000000 !important;
+  border-color: #ffd60a !important;
+  text-decoration: none;
+}
+
+html.contraste-fort .btn-outline-vivora {
+  color: #ffd60a;
+  border-color: #ffd60a;
+}
+
+html.contraste-fort .badge-vivora {
+  background: #ffffff;
+  color: #000000;
+}
+
+html.contraste-fort .erreur-champ {
+  color: #ff8a80;
+}
+
+html.contraste-fort .table {
+  --bs-table-bg: #000000;
+  --bs-table-color: #ffffff;
+  --bs-table-striped-bg: #1a1a1a;
+  --bs-table-hover-bg: #222222;
+  --bs-table-hover-color: #ffffff;
+}
+
+html.lecture-facile body,
+html.lecture-facile p,
+html.lecture-facile li,
+html.lecture-facile label,
+html.lecture-facile h1,
+html.lecture-facile h2,
+html.lecture-facile h3,
+html.lecture-facile h4,
+html.lecture-facile .btn {
+  font-family: Verdana, Arial, sans-serif !important;
+  letter-spacing: 0.04em;
+  word-spacing: 0.12em;
+}
+
+html.lecture-facile p,
+html.lecture-facile li {
+  line-height: 1.9;
+  text-align: left;
+  max-width: 70ch;
+}
+
+html.lecture-facile em,
+html.lecture-facile i:not([class*="bi"]):not([class*="fa"]) {
+  font-style: normal;
+}
+
+html.lecture-facile [data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html.lecture-facile *,
+html.lecture-facile *::before,
+html.lecture-facile *::after {
+  animation: none !important;
+  scroll-behavior: auto !important;
+}
