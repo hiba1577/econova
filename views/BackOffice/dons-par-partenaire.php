@@ -46,6 +46,7 @@ include __DIR__ . '/includes/header.php';
                   <th>Type</th>
                   <th>Nombre de dons</th>
                   <th>Dons validés</th>
+                  <th>Dons physiques</th>
                   <th>En attente</th>
                   <th>Total validé</th>
                   <th></th>
@@ -58,6 +59,7 @@ include __DIR__ . '/includes/header.php';
                     <td><?= htmlspecialchars(ucfirst($l['type'])) ?></td>
                     <td><?= (int) $l['nombre_dons'] ?></td>
                     <td><?= (int) $l['nombre_valides'] ?></td>
+                    <td><?= (int) $l['nombre_physiques'] ?></td>
                     <td><?= htmlspecialchars(number_format($l['total_attente'], 2, ',', ' ')) ?> DT</td>
                     <td><strong><?= htmlspecialchars(number_format($l['total_valide'], 2, ',', ' ')) ?> DT</strong></td>
                     <td><a href="dons-liste.php?partenaire=<?= (int) $l['id'] ?>" class="btn btn-sm btn-outline-secondary">Voir les dons</a></td>
@@ -66,7 +68,7 @@ include __DIR__ . '/includes/header.php';
               </tbody>
               <tfoot>
                 <tr class="table-light">
-                  <th colspan="5">Total</th>
+                  <th colspan="6">Total financier validé</th>
                   <th><?= htmlspecialchars(number_format($totalGeneral, 2, ',', ' ')) ?> DT</th>
                   <th></th>
                 </tr>

@@ -3,7 +3,7 @@ $titre = $titre ?? 'Back office';
 $menu = $menu ?? '';
 $groupeUtilisateurs = in_array($menu, ['utilisateurs', 'utilisateur-ajout', 'par-besoin'], true);
 $groupePartenariats = in_array($menu, ['partenaires', 'partenaire-ajout', 'publicites', 'publicite-ajout'], true);
-$groupeDons = in_array($menu, ['dons', 'dons-partenaire'], true);
+$groupeDons = in_array($menu, ['dons', 'dons-physiques', 'dons-partenaire'], true);
 ?>
 <!DOCTYPE html>
 <html lang="fr" class="<?= htmlspecialchars(classesAccessibilite()) ?>">
@@ -118,6 +118,9 @@ $groupeDons = in_array($menu, ['dons', 'dons-partenaire'], true);
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="dons-liste.php" class="nav-link <?= $menu === 'dons' ? 'active' : '' ?>"><i class="nav-icon bi bi-circle"></i><p>Liste des dons</p></a>
+              </li>
+              <li class="nav-item">
+                <a href="dons-liste.php?type=physique" class="nav-link <?= $menu === 'dons-physiques' ? 'active' : '' ?>"><i class="nav-icon bi bi-circle"></i><p>Dons physiques</p></a>
               </li>
               <li class="nav-item">
                 <a href="dons-par-partenaire.php" class="nav-link <?= $menu === 'dons-partenaire' ? 'active' : '' ?>"><i class="nav-icon bi bi-circle"></i><p>Dons par partenaire</p></a>

@@ -12,36 +12,67 @@ $partenaires = $partenaireController->readPartenaire();
 $statuts = [
     'en_attente' => ['En attente', 'text-bg-warning'],
     'valide' => ['Validé', 'text-bg-success'],
-    'refuse' => ['Refusé', 'text-bg-danger']
+    'refuse' => ['Refusé', 'text-bg-danger'],
+    'recu' => ['Reçu', 'text-bg-info']
 ];
+$types = ['financier' => 'Financier', 'physique' => 'Physique'];
 $moyens = ['carte' => 'Carte', 'virement' => 'Virement', 'especes' => 'Espèces'];
 
 $statut = $_GET['statut'] ?? '';
 $partenaireId = $_GET['partenaire'] ?? '';
+$type = $_GET['type'] ?? '';
+$categorie = $_GET['categorie'] ?? '';
 if (!isset($statuts[$statut])) {
     $statut = '';
 }
 if (!in_array((string) $partenaireId, array_map('strval', array_column($partenaires, 'id')), true)) {
     $partenaireId = '';
 }
-$dons = $donController->readDon($statut, $partenaireId);
+if (!isset($types[$type])) {
+    $type = '';
+}
+if (!isset(DonPhysiqueController::CATEGORIES[$categorie])) {
+    $categorie = '';
+}
+if ($categorie !== '') {
+    $type = 'physique';
+}
+$dons = $donController->readDon($statut, $partenaireId, $type, $categorie);
 
 $total = 0;
 foreach ($dons as $d) {
-    if ($d['statut'] === 'valide') {
+    if ($d['type_don'] === 'financier' && $d['statut'] === 'valide') {
         $total += $d['montant'];
     }
 }
 
-$titre = 'Liste des dons';
-$menu = 'dons';
+$titre = $type === 'physique' ? 'Dons physiques' : 'Liste des dons';
+$menu = $type === 'physique' ? 'dons-physiques' : 'dons';
 include __DIR__ . '/includes/header.php';
 ?>
 
         <div class="card mb-4">
           <div class="card-body">
             <form method="get" action="dons-liste.php" class="row g-3 align-items-end">
-              <div class="col-md-4">
+              <div class="col-md-2">
+                <label for="type" class="form-label">Type</label>
+                <select id="type" name="type" class="form-select">
+                  <option value="">Tous</option>
+                  <?php foreach ($types as $cle => $libelle): ?>
+                    <option value="<?= $cle ?>" <?= $type === $cle ? 'selected' : '' ?>><?= $libelle ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="categorie" class="form-label">Catégorie (dons physiques)</label>
+                <select id="categorie" name="categorie" class="form-select">
+                  <option value="">Toutes</option>
+                  <?php foreach (DonPhysiqueController::CATEGORIES as $cle => $libelle): ?>
+                    <option value="<?= $cle ?>" <?= $categorie === $cle ? 'selected' : '' ?>><?= htmlspecialchars($libelle) ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+              <div class="col-md-2">
                 <label for="statut" class="form-label">Statut</label>
                 <select id="statut" name="statut" class="form-select">
                   <option value="">Tous</option>
@@ -50,7 +81,7 @@ include __DIR__ . '/includes/header.php';
                   <?php endforeach; ?>
                 </select>
               </div>
-              <div class="col-md-5">
+              <div class="col-md-3">
                 <label for="partenaire" class="form-label">Partenaire</label>
                 <select id="partenaire" name="partenaire" class="form-select">
                   <option value="">Tous les partenaires</option>
@@ -59,7 +90,7 @@ include __DIR__ . '/includes/header.php';
                   <?php endforeach; ?>
                 </select>
               </div>
-              <div class="col-md-3 d-flex gap-2">
+              <div class="col-md-2 d-flex gap-2">
                 <button type="submit" class="btn btn-vivora w-100"><i class="bi bi-funnel"></i> Filtrer</button>
                 <a href="dons-liste.php" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
               </div>
@@ -69,7 +100,7 @@ include __DIR__ . '/includes/header.php';
 
         <div class="card mb-4">
           <div class="card-header">
-            <h3 class="card-title"><?= count($dons) ?> don(s) - total validé : <strong><?= htmlspecialchars(number_format($total, 2, ',', ' ')) ?> DT</strong></h3>
+            <h3 class="card-title"><?= count($dons) ?> don(s) - total financier validé : <strong><?= htmlspecialchars(number_format($total, 2, ',', ' ')) ?> DT</strong></h3>
           </div>
           <div class="card-body p-0 table-responsive">
             <table class="table table-hover table-striped align-middle mb-0">
@@ -78,9 +109,9 @@ include __DIR__ . '/includes/header.php';
                   <th>Date</th>
                   <th>Donateur</th>
                   <th>Partenaire</th>
-                  <th>Montant</th>
+                  <th>Type</th>
+                  <th>Détail</th>
                   <th>Paiement</th>
-                  <th>Message</th>
                   <th>Statut</th>
                   <th class="text-end">Actions</th>
                 </tr>
@@ -100,12 +131,16 @@ include __DIR__ . '/includes/header.php';
                       <?php endif; ?>
                     </td>
                     <td><a href="partenaire-detail.php?id=<?= (int) $d['partenaire_id'] ?>"><?= htmlspecialchars($d['partenaire_nom']) ?></a></td>
-                    <td><?= htmlspecialchars(number_format($d['montant'], 2, ',', ' ')) ?> DT</td>
-                    <td><?= htmlspecialchars($moyens[$d['moyen_paiement']]) ?></td>
-                    <td><?= htmlspecialchars($d['message'] ?? '') ?></td>
+                    <td>
+                      <?= $d['type_don'] === 'physique' ? 'Physique' : 'Financier' ?>
+                      <?php if ($d['categorie'] !== null): ?><br><span class="badge text-bg-light"><?= htmlspecialchars(DonPhysiqueController::CATEGORIES[$d['categorie']]) ?></span><?php endif; ?>
+                    </td>
+                    <td><?= htmlspecialchars($donController->detail($d)) ?></td>
+                    <td><?= htmlspecialchars($moyens[$d['moyen_paiement']] ?? '-') ?></td>
                     <td><span class="badge <?= $statuts[$d['statut']][1] ?>"><?= $statuts[$d['statut']][0] ?></span></td>
                     <td class="text-end text-nowrap">
-                      <?php if ($d['statut'] !== 'valide'): ?>
+                      <a href="don-detail.php?id=<?= (int) $d['id'] ?>" class="btn btn-sm btn-outline-secondary" title="Détail"><i class="bi bi-eye"></i></a>
+                      <?php if ($d['statut'] === 'en_attente' || $d['statut'] === 'refuse'): ?>
                         <form method="post" action="don-statut.php" class="d-inline">
                           <?= champCsrf() ?>
                           <input type="hidden" name="id" value="<?= (int) $d['id'] ?>">
@@ -113,12 +148,20 @@ include __DIR__ . '/includes/header.php';
                           <button type="submit" class="btn btn-sm btn-outline-success" title="Valider"><i class="bi bi-check-lg"></i></button>
                         </form>
                       <?php endif; ?>
-                      <?php if ($d['statut'] !== 'refuse'): ?>
+                      <?php if ($d['statut'] === 'en_attente' || $d['statut'] === 'valide'): ?>
                         <form method="post" action="don-statut.php" class="d-inline">
                           <?= champCsrf() ?>
                           <input type="hidden" name="id" value="<?= (int) $d['id'] ?>">
                           <input type="hidden" name="statut" value="refuse">
                           <button type="submit" class="btn btn-sm btn-outline-warning" title="Refuser"><i class="bi bi-x-lg"></i></button>
+                        </form>
+                      <?php endif; ?>
+                      <?php if ($d['type_don'] === 'physique' && $d['statut'] !== 'recu' && $d['statut'] !== 'refuse'): ?>
+                        <form method="post" action="don-statut.php" class="d-inline">
+                          <?= champCsrf() ?>
+                          <input type="hidden" name="id" value="<?= (int) $d['id'] ?>">
+                          <input type="hidden" name="statut" value="recu">
+                          <button type="submit" class="btn btn-sm btn-outline-info" title="Marquer comme reçu"><i class="bi bi-box-arrow-in-down"></i></button>
                         </form>
                       <?php endif; ?>
                       <form method="post" action="don-supprimer.php" class="d-inline" onsubmit="return confirm('Supprimer ce don ?');">
