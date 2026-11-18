@@ -1,0 +1,121 @@
+<?php
+require_once __DIR__ . '/../../session.php';
+require_once __DIR__ . '/../../controllers/UtilisateurController.php';
+require_once __DIR__ . '/../../controllers/ProfilAccessibiliteController.php';
+require_once __DIR__ . '/../../controllers/DonController.php';
+
+requireRole('admin');
+
+$utilisateurController = new UtilisateurController();
+$profilController = new ProfilAccessibiliteController();
+$donController = new DonController();
+
+$id = (int) ($_GET['id'] ?? 0);
+$utilisateur = $utilisateurController->getUtilisateurById($id);
+if (!$utilisateur) {
+    $_SESSION['erreur'] = 'Utilisateur introuvable.';
+    header('Location: utilisateurs-liste.php');
+    exit;
+}
+$profil = $profilController->getProfilByUserId($id);
+$dons = $donController->readDonsByUtilisateur($id);
+$moiMeme = $id === (int) $_SESSION['user']['id'];
+
+$tailles = ['normal' => 'Normal', 'grand' => 'Grand', 'tres-grand' => 'Très grand'];
+$statutsDon = [
+    'en_attente' => ['En attente', 'text-bg-warning'],
+    'valide' => ['Validé', 'text-bg-success'],
+    'refuse' => ['Refusé', 'text-bg-danger']
+];
+
+$titre = 'Détail de l\'utilisateur';
+$menu = 'utilisateurs';
+include __DIR__ . '/includes/header.php';
+?>
+
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="card card-vivora mb-4">
+              <div class="card-header">
+                <h3 class="card-title"><?= htmlspecialchars($utilisateur['prenom'] . ' ' . $utilisateur['nom']) ?></h3>
+              </div>
+              <div class="card-body">
+                <dl class="row mb-0">
+                  <dt class="col-sm-4">Identifiant</dt><dd class="col-sm-8"><?= (int) $utilisateur['id'] ?></dd>
+                  <dt class="col-sm-4">E-mail</dt><dd class="col-sm-8"><?= htmlspecialchars($utilisateur['email']) ?></dd>
+                  <dt class="col-sm-4">Téléphone</dt><dd class="col-sm-8"><?= htmlspecialchars($utilisateur['telephone']) ?></dd>
+                  <dt class="col-sm-4">Rôle</dt><dd class="col-sm-8"><span class="badge <?= $utilisateur['role'] === 'admin' ? 'text-bg-dark' : 'text-bg-secondary' ?>"><?= htmlspecialchars($utilisateur['role']) ?></span></dd>
+                  <dt class="col-sm-4">Statut</dt><dd class="col-sm-8"><span class="badge <?= $utilisateur['statut'] === 'actif' ? 'text-bg-success' : 'text-bg-danger' ?>"><?= $utilisateur['statut'] === 'actif' ? 'Actif' : 'Bloqué' ?></span></dd>
+                  <dt class="col-sm-4">Inscription</dt><dd class="col-sm-8"><?= htmlspecialchars(date('d/m/Y H:i', strtotime($utilisateur['date_inscription']))) ?></dd>
+                </dl>
+              </div>
+              <div class="card-footer d-flex flex-wrap gap-2">
+                <a href="utilisateur-modifier.php?id=<?= $id ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i> Modifier</a>
+                <?php if (!$moiMeme): ?>
+                  <form method="post" action="utilisateur-statut.php">
+                    <?= champCsrf() ?>
+                    <input type="hidden" name="id" value="<?= $id ?>">
+                    <?php if ($utilisateur['statut'] === 'actif'): ?>
+                      <input type="hidden" name="statut" value="bloque">
+                      <button type="submit" class="btn btn-sm btn-warning"><i class="bi bi-lock"></i> Bloquer</button>
+                    <?php else: ?>
+                      <input type="hidden" name="statut" value="actif">
+                      <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-unlock"></i> Réactiver</button>
+                    <?php endif; ?>
+                  </form>
+                  <form method="post" action="utilisateur-supprimer.php" onsubmit="return confirm('Supprimer cet utilisateur et son profil ?');">
+                    <?= champCsrf() ?>
+                    <input type="hidden" name="id" value="<?= $id ?>">
+                    <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Supprimer</button>
+                  </form>
+                <?php endif; ?>
+                <a href="utilisateurs-liste.php" class="btn btn-sm btn-outline-secondary ms-auto">Retour à la liste</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card card-vivora mb-4">
+              <div class="card-header"><h3 class="card-title">Profil d'accessibilité</h3></div>
+              <div class="card-body">
+                <?php if (!$profil): ?>
+                  <p class="mb-0">Aucun profil d'accessibilité.</p>
+                <?php else: ?>
+                  <dl class="row mb-0">
+                    <dt class="col-sm-5">Besoin visuel</dt><dd class="col-sm-7"><?= $profil['besoin_visuel'] ? 'Oui' : 'Non' ?></dd>
+                    <dt class="col-sm-5">Besoin moteur</dt><dd class="col-sm-7"><?= $profil['besoin_moteur'] ? 'Oui' : 'Non' ?></dd>
+                    <dt class="col-sm-5">Besoin auditif</dt><dd class="col-sm-7"><?= $profil['besoin_auditif'] ? 'Oui' : 'Non' ?></dd>
+                    <dt class="col-sm-5">Taille du texte</dt><dd class="col-sm-7"><?= htmlspecialchars($tailles[$profil['taille_texte']]) ?></dd>
+                    <dt class="col-sm-5">Contraste fort</dt><dd class="col-sm-7"><?= $profil['contraste_fort'] ? 'Oui' : 'Non' ?></dd>
+                    <dt class="col-sm-5">Lecture facile</dt><dd class="col-sm-7"><?= $profil['lecture_facile'] ? 'Oui' : 'Non' ?></dd>
+                  </dl>
+                <?php endif; ?>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header"><h3 class="card-title">Dons de cet utilisateur</h3></div>
+          <div class="card-body p-0 table-responsive">
+            <table class="table table-striped mb-0">
+              <thead><tr><th>Date</th><th>Partenaire</th><th>Montant</th><th>Paiement</th><th>Statut</th></tr></thead>
+              <tbody>
+                <?php if (empty($dons)): ?>
+                  <tr><td colspan="5" class="text-center">Aucun don.</td></tr>
+                <?php endif; ?>
+                <?php foreach ($dons as $d): ?>
+                  <tr>
+                    <td><?= htmlspecialchars(date('d/m/Y H:i', strtotime($d['date_don']))) ?></td>
+                    <td><?= htmlspecialchars($d['partenaire_nom']) ?></td>
+                    <td><?= htmlspecialchars(number_format($d['montant'], 2, ',', ' ')) ?> DT</td>
+                    <td><?= htmlspecialchars($d['moyen_paiement']) ?></td>
+                    <td><span class="badge <?= $statutsDon[$d['statut']][1] ?>"><?= $statutsDon[$d['statut']][0] ?></span></td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+<?php include __DIR__ . '/includes/footer.php'; ?>
