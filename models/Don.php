@@ -10,8 +10,9 @@ class Don
     private $moyenPaiement;
     private $message;
     private $statut;
+    private $typeDon;
 
-    public function __construct($id, $utilisateurId, $partenaireId, $montant, $dateDon, $moyenPaiement, $message, $statut = 'en_attente')
+    public function __construct($id, $utilisateurId, $partenaireId, $montant, $dateDon, $moyenPaiement, $message, $statut = 'en_attente', $typeDon = 'financier')
     {
         $this->id = $id;
         $this->utilisateurId = $utilisateurId;
@@ -21,6 +22,7 @@ class Don
         $this->moyenPaiement = $moyenPaiement;
         $this->message = $message;
         $this->statut = $statut;
+        $this->typeDon = $typeDon;
     }
 
     public function getId()
@@ -101,5 +103,15 @@ class Don
     public function setStatut($statut)
     {
         $this->statut = $statut;
+    }
+
+    public function getTypeDon()
+    {
+        return $this->typeDon;
+    }
+
+    public function setTypeDon($typeDon)
+    {
+        $this->typeDon = $typeDon;
     }
 }
