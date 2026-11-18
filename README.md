@@ -26,7 +26,7 @@ Le projet est écrit en PHP 8 avec PDO et MySQL, en architecture MVC, sans frame
 | `mon-profil.php` | Modifier ses informations, changer son mot de passe (l'ancien est exigé), modifier son profil d'accessibilité, supprimer son compte |
 | `partenaires.php` | Partenaires actifs, avec un filtre par type |
 | `partenaire-detail.php` | Fiche d'un partenaire, ses publicités et le bouton « Faire un don » |
-| `faire-don.php` | Formulaire de don (utilisateur connecté) |
+| `faire-don.php` | Don financier ou physique (utilisateur connecté), avec un récapitulatif après l'envoi |
 | `mes-dons.php` | Historique de ses propres dons avec leur statut |
 
 Les préférences d'accessibilité de l'utilisateur connecté s'appliquent à tout le site
@@ -40,7 +40,7 @@ grâce à des classes posées sur la balise `<html>` :
 | Tableau de bord | `dashboard.php` : utilisateurs, comptes bloqués, partenaires, publicités actives, total des dons validés, dons en attente, derniers dons |
 | Utilisateurs | `utilisateurs-liste.php` (jointure avec le profil, recherche, filtre par rôle et statut, tri), `utilisateur-ajout.php`, `utilisateur-modifier.php`, `utilisateur-detail.php`, `utilisateur-supprimer.php`, `utilisateur-statut.php` (bloquer / réactiver), `utilisateurs-par-besoin.php` (INNER JOIN) |
 | Partenariats | `partenaires-liste.php`, `partenaire-ajout.php`, `partenaire-modifier.php`, `partenaire-detail.php` (avec ses publicités et ses dons), `partenaire-supprimer.php`, `publicites-liste.php`, `publicite-ajout.php`, `publicite-modifier.php`, `publicite-supprimer.php`, `publicite-statut.php` (activer / désactiver) |
-| Dons | `dons-liste.php` (filtre par statut et par partenaire), `don-statut.php` (valider / refuser), `don-supprimer.php`, `dons-par-partenaire.php` (total par partenaire) |
+| Dons | `dons-liste.php` (filtre par type, catégorie, statut et partenaire), `don-detail.php`, `don-statut.php` (valider, refuser, marquer comme reçu), `don-supprimer.php`, `dons-par-partenaire.php` (total par partenaire) |
 
 Upload d'images (publicités et logos) dans `uploads/` : jpg, png ou webp uniquement
 (extension et type MIME réel vérifiés), 2 Mo maximum, nom de fichier généré au hasard.
@@ -53,9 +53,11 @@ Upload d'images (publicités et logos) dans `uploads/` : jpg, png ou webp unique
 | `profil_accessibilite` | id, user_id (UNIQUE, FK), besoin_visuel, besoin_moteur, besoin_auditif, taille_texte (normal, grand, tres-grand), contraste_fort, lecture_facile |
 | `partenaire` | id, nom, type (association, clinique, pharmacie, sponsor), email, telephone, adresse, description, logo, statut (actif, inactif), date_debut |
 | `publicite` | id, partenaire_id (FK), titre, description, image, lien, date_debut, date_fin, statut (active, inactive) |
-| `don` | id, utilisateur_id (FK), partenaire_id (FK), montant, date_don, moyen_paiement (carte, virement, especes), message, statut (en_attente, valide, refuse) |
+| `don` | id, utilisateur_id (FK), partenaire_id (FK), type_don (financier, physique), montant (NULL pour un don physique), date_don, moyen_paiement (carte, virement, especes, NULL pour un don physique), message, statut (en_attente, valide, refuse, recu) |
+| `don_physique` | id, don_id (UNIQUE, FK), categorie (sang, equipement, medicament, service, autre), puis les champs de chaque catégorie (voir « Dons physiques ») |
 
 - Utilisateur **1 - 1** ProfilAccessibilite (`ON DELETE CASCADE`)
+- Don **1 - 0..1** DonPhysique, composition (`ON DELETE CASCADE`)
 - Partenaire **1 - n** Publicite (`ON DELETE CASCADE`)
 - Partenaire **1 - n** Don (`ON DELETE CASCADE`)
 - Utilisateur **1 - n** Don (`ON DELETE SET NULL` : le don reste dans l'historique du partenaire si le compte est supprimé)
@@ -67,6 +69,37 @@ Les diagrammes sont dans `docs/` :
 
 Pour obtenir les images PNG, ouvrir les fichiers avec l'extension PlantUML de VS Code
 (clic droit, « Export Current Diagram ») ou avec `java -jar plantuml.jar docs/*.puml`.
+
+## Dons physiques
+
+En plus des dons financiers, un utilisateur connecté peut faire un **don physique** depuis `faire-don.php` :
+
+1. Il choisit le type de don avec deux grandes cartes : « Don financier » ou « Don physique ».
+2. Pour un don physique, il choisit une catégorie parmi 5 cartes. Seul le formulaire de cette catégorie s'affiche (en JavaScript). Sans JavaScript, tous les blocs restent visibles et la validation PHP ne vérifie que la catégorie choisie.
+3. Après l'envoi, une page de confirmation affiche le récapitulatif du don.
+
+| Catégorie | Champs et règles |
+|-----------|------------------|
+| Sang | groupe sanguin (A+ à O-), date de disponibilité (aujourd'hui ou plus tard), 3 cases obligatoires : plus de 18 ans, plus de 50 kg, pas de don depuis 3 mois |
+| Équipement médical | type (fauteuil roulant, béquilles, déambulateur, lit médicalisé, appareil auditif, lunettes, autre), état (neuf, bon, usagé), quantité de 1 à 20, mode de remise (dépôt ou récupération), adresse obligatoire seulement pour une récupération |
+| Médicaments | nom, nombre de boîtes de 1 à 50, date d'expiration au moins 3 mois après aujourd'hui, case obligatoire « Emballage fermé et non entamé » |
+| Service de santé bénévole | domaine (médecin, infirmier, kinésithérapeute, psychologue, aide à domicile, accompagnement, transport, autre), au moins un jour disponible, 1 à 100 heures par mois, expérience ou qualifications (10 à 500 caractères) |
+| Autre | description obligatoire (10 à 500 caractères) |
+
+- Toutes les catégories ont une zone facultative « Autre type ou article non mentionné » (300 caractères maximum, avec un compteur).
+- Le partenaire est obligatoire. Pour le sang et les médicaments, seuls les cliniques et les pharmacies sont acceptées.
+- Les champs des autres catégories sont ignorés et enregistrés en `NULL`.
+- `DonController::CreatePhysique()` insère le don (`type_don = physique`, `montant = NULL`), puis la ligne `don_physique` avec le `lastInsertId`, dans une transaction PDO (`beginTransaction`, `commit`, `rollBack`).
+- La connexion PDO active le mode SQL strict : une valeur hors ENUM ou un NULL interdit provoque une vraie erreur, et donc un `rollBack`.
+
+Côté Back office :
+
+- `dons-liste.php` se filtre par type et par catégorie et affiche une colonne Détail (par exemple « Sang O+ » ou « Fauteuil roulant × 1 (bon état) ») ;
+- `don-detail.php` affiche toutes les informations du don (jointure don + don_physique + utilisateur + partenaire), avec les boutons Valider, Refuser et « Marquer comme reçu » (POST + CSRF). « Reçu » est réservé aux dons physiques ;
+- le tableau de bord affiche le nombre de dons physiques et leur répartition par catégorie. Le total financier ne compte que les dons financiers validés ;
+- la sidebar contient le lien « Dons physiques » (`dons-liste.php?type=physique`).
+
+Les données de test contiennent 2 dons de sang, 2 équipements, 1 lot de médicaments, 1 service bénévole et 1 don « autre ».
 
 ## Sécurité
 
@@ -138,13 +171,15 @@ vivora/
 │   ├── ProfilAccessibiliteController.php
 │   ├── PartenaireController.php
 │   ├── PubliciteController.php
-│   └── DonController.php
+│   ├── DonController.php
+│   └── DonPhysiqueController.php
 ├── models/
 │   ├── Utilisateur.php
 │   ├── ProfilAccessibilite.php
 │   ├── Partenaire.php
 │   ├── Publicite.php
-│   └── Don.php
+│   ├── Don.php
+│   └── DonPhysique.php
 ├── views/
 │   ├── erreur-403.php
 │   ├── FrontOffice/

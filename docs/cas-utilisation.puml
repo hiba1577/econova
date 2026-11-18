@@ -29,6 +29,14 @@ rectangle "Vivora" {
   usecase "Modifier son profil d'accessibilité" as UC_ProfilAcc
   usecase "Supprimer son compte" as UC_ProfilSup
   usecase "Faire un don" as UC_Don
+  usecase "Faire un don financier" as UC_DonFin
+  usecase "Faire un don physique" as UC_DonPhy
+  usecase "Donner son sang" as UC_DonSang
+  usecase "Donner un équipement médical" as UC_DonEquip
+  usecase "Donner des médicaments" as UC_DonMedoc
+  usecase "Proposer un service de santé bénévole" as UC_DonService
+  usecase "Faire un autre don physique" as UC_DonAutre
+  usecase "Ajouter un article non mentionné" as UC_AutreArticle
   usecase "Consulter ses dons" as UC_MesDons
 
   usecase "Gérer les utilisateurs" as UC_GU
@@ -53,6 +61,7 @@ rectangle "Vivora" {
   usecase "Gérer les dons" as UC_GD
   usecase "Consulter les dons" as UC_GD_C
   usecase "Valider / refuser un don" as UC_GD_V
+  usecase "Marquer un don physique comme reçu" as UC_GD_R
   usecase "Supprimer un don" as UC_GD_S
 
   usecase "Consulter le tableau de bord" as UC_Dash
@@ -78,6 +87,15 @@ UC_ProfilMdp --|> UC_Profil
 UC_ProfilAcc --|> UC_Profil
 UC_ProfilSup --|> UC_Profil
 
+UC_DonFin --|> UC_Don
+UC_DonPhy --|> UC_Don
+UC_DonSang --|> UC_DonPhy
+UC_DonEquip --|> UC_DonPhy
+UC_DonMedoc --|> UC_DonPhy
+UC_DonService --|> UC_DonPhy
+UC_DonAutre --|> UC_DonPhy
+UC_AutreArticle .> UC_DonPhy : <<extend>>
+
 UC_GU_A --|> UC_GU
 UC_GU_C --|> UC_GU
 UC_GU_M --|> UC_GU
@@ -96,6 +114,7 @@ UC_GPub_S --|> UC_GPub
 
 UC_GD_C --|> UC_GD
 UC_GD_V --|> UC_GD
+UC_GD_R --|> UC_GD
 UC_GD_S --|> UC_GD
 
 UC_Profil ..> UC_Auth : <<include>>

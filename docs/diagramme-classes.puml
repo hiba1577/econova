@@ -42,6 +42,20 @@ enum StatutDon {
   en_attente
   valide
   refuse
+  recu
+}
+
+enum TypeDon {
+  financier
+  physique
+}
+
+enum CategorieDonPhysique {
+  sang
+  equipement
+  medicament
+  service
+  autre
 }
 
 class Utilisateur {
@@ -104,12 +118,36 @@ class Don {
   - id : int
   - utilisateurId : int
   - partenaireId : int
-  - montant : decimal
+  - montant : decimal [0..1]
   - dateDon : datetime
-  - moyenPaiement : MoyenPaiement
+  - moyenPaiement : MoyenPaiement [0..1]
   - message : string
   - statut : StatutDon
-  + __construct(id, utilisateurId, partenaireId, montant, dateDon, moyenPaiement, message, statut)
+  - typeDon : TypeDon
+  + __construct(id, utilisateurId, partenaireId, montant, dateDon, moyenPaiement, message, statut, typeDon)
+  + getters / setters()
+}
+
+class DonPhysique {
+  - id : int
+  - donId : int
+  - categorie : CategorieDonPhysique
+  - groupeSanguin : string
+  - dateDisponibilite : date
+  - typeEquipement : string
+  - etat : string
+  - quantite : int
+  - nomMedicament : string
+  - dateExpiration : date
+  - emballageFerme : bool
+  - domaineService : string
+  - disponibilites : string
+  - heuresParMois : int
+  - modeRemise : string
+  - adresseRecuperation : string
+  - description : string
+  - autreArticle : string
+  + __construct(id, donId, categorie, ...)
   + getters / setters()
 }
 
@@ -164,12 +202,30 @@ class DonController {
   + readDon(statut, partenaireId) : array
   + getDonById(id) : array
   + readDonsByUtilisateur(utilisateurId) : array
+  + getDonDetail(id) : array
   + Create(Don d) : int
+  + CreatePhysique(Don d, DonPhysique dp) : int
   + Update(Don d, id) : bool
   + Delete(id) : bool
   + changerStatut(id, statut)
+  + totalValide() : float
+  + compterPhysiques() : int
   + donsParPartenaire() : array
-  + valider(donnees, partenairesValides) : array
+  + detail(don) : string
+  + valider(donnees, partenairesValides, partenairesSante) : array
+}
+
+class DonPhysiqueController {
+  + readDonPhysique(categorie) : array
+  + getDonPhysiqueById(id) : array
+  + getByDonId(donId) : array
+  + Create(DonPhysique d) : int
+  + Update(DonPhysique d, id) : bool
+  + Delete(id) : bool
+  + statistiquesParCategorie() : array
+  + resume(don) : string
+  + depuisFormulaire(donnees, donId) : DonPhysique
+  + valider(donnees, partenairesValides, partenairesSante) : array
 }
 
 class config {
@@ -181,12 +237,16 @@ Utilisateur "1" -- "0..1" ProfilAccessibilite : possède >
 Partenaire "1" *-- "0..*" Publicite : publie >
 Partenaire "1" -- "0..*" Don : reçoit >
 Utilisateur "1" -- "0..*" Don : fait >
+Don "1" *-- "0..1" DonPhysique : détaille >
 
 UtilisateurController ..> Utilisateur
 ProfilAccessibiliteController ..> ProfilAccessibilite
 PartenaireController ..> Partenaire
 PubliciteController ..> Publicite
 DonController ..> Don
+DonController ..> DonPhysiqueController : transaction
+DonPhysiqueController ..> DonPhysique
+DonPhysiqueController ..> config
 
 UtilisateurController ..> config
 ProfilAccessibiliteController ..> config
