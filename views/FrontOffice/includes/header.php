@@ -56,6 +56,7 @@ $connecte = estConnecte();
             <li><a href="index.php" class="<?= $pageActive === 'accueil' ? 'active' : '' ?>">Accueil</a></li>
             <li><a href="partenaires.php" class="<?= $pageActive === 'partenaires' ? 'active' : '' ?>">Partenaires</a></li>
             <?php if ($connecte): ?>
+              <li><a href="mes-dons.php" class="<?= $pageActive === 'dons' ? 'active' : '' ?>">Mes dons</a></li>
               <li><a href="mon-profil.php" class="<?= $pageActive === 'profil' ? 'active' : '' ?>">Mon profil</a></li>
               <?php if ($_SESSION['user']['role'] === 'admin'): ?>
                 <li><a href="../BackOffice/dashboard.php">Back office</a></li>
@@ -70,7 +71,7 @@ $connecte = estConnecte();
         </nav>
 
         <?php if ($connecte): ?>
-          <a class="cta-btn d-none d-sm-block" href="mon-profil.php">Mon profil</a>
+          <a class="cta-btn d-none d-sm-block" href="partenaires.php">Faire un don</a>
         <?php else: ?>
           <a class="cta-btn d-none d-sm-block" href="inscription.php">Créer un compte</a>
         <?php endif; ?>

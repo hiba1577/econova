@@ -41,6 +41,7 @@ include __DIR__ . '/includes/header.php';
                 <li class="mb-2"><i class="bi bi-telephone"></i> <?= htmlspecialchars($partenaire['telephone']) ?></li>
                 <li class="mb-2"><i class="bi bi-calendar-check"></i> Partenaire depuis le <?= htmlspecialchars(date('d/m/Y', strtotime($partenaire['date_debut']))) ?></li>
               </ul>
+              <a href="faire-don.php?partenaire=<?= (int) $partenaire['id'] ?>" class="btn btn-vivora btn-lg w-100"><i class="bi bi-heart"></i> Faire un don</a>
             </div>
           </div>
 

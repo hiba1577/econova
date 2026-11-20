@@ -48,6 +48,7 @@ include __DIR__ . '/includes/header.php';
                 <p><?= htmlspecialchars(mb_strimwidth($p['description'] ?? '', 0, 140, '...')) ?></p>
                 <p class="small mb-3"><i class="bi bi-geo-alt"></i> <?= htmlspecialchars($p['adresse']) ?></p>
                 <a href="partenaire-detail.php?id=<?= (int) $p['id'] ?>" class="btn btn-outline-vivora btn-sm">Voir la fiche</a>
+                <a href="faire-don.php?partenaire=<?= (int) $p['id'] ?>" class="btn btn-vivora btn-sm">Faire un don</a>
               </div>
             </div>
           <?php endforeach; ?>

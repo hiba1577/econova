@@ -2,11 +2,13 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 require_once __DIR__ . '/../../controllers/ProfilAccessibiliteController.php';
+require_once __DIR__ . '/../../controllers/DonController.php';
 
 requireRole('admin');
 
 $utilisateurController = new UtilisateurController();
 $profilController = new ProfilAccessibiliteController();
+$donController = new DonController();
 
 $id = (int) ($_GET['id'] ?? 0);
 $utilisateur = $utilisateurController->getUtilisateurById($id);
@@ -16,9 +18,16 @@ if (!$utilisateur) {
     exit;
 }
 $profil = $profilController->getProfilByUserId($id);
+$dons = $donController->readDonsByUtilisateur($id);
 $moiMeme = $id === (int) $_SESSION['user']['id'];
 
 $tailles = ['normal' => 'Normal', 'grand' => 'Grand', 'tres-grand' => 'Très grand'];
+$statutsDon = [
+    'en_attente' => ['En attente', 'text-bg-warning'],
+    'valide' => ['Validé', 'text-bg-success'],
+    'refuse' => ['Refusé', 'text-bg-danger'],
+    'recu' => ['Reçu', 'text-bg-info']
+];
 
 $titre = 'Détail de l\'utilisateur';
 $menu = 'utilisateurs';
@@ -84,6 +93,30 @@ include __DIR__ . '/includes/header.php';
                 <?php endif; ?>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header"><h3 class="card-title">Dons de cet utilisateur</h3></div>
+          <div class="card-body p-0 table-responsive">
+            <table class="table table-striped mb-0">
+              <thead><tr><th>Date</th><th>Partenaire</th><th>Type</th><th>Montant / détail</th><th>Paiement</th><th>Statut</th></tr></thead>
+              <tbody>
+                <?php if (empty($dons)): ?>
+                  <tr><td colspan="6" class="text-center">Aucun don.</td></tr>
+                <?php endif; ?>
+                <?php foreach ($dons as $d): ?>
+                  <tr>
+                    <td><?= htmlspecialchars(date('d/m/Y H:i', strtotime($d['date_don']))) ?></td>
+                    <td><?= htmlspecialchars($d['partenaire_nom']) ?></td>
+                    <td><?= $d['type_don'] === 'physique' ? 'Physique' : 'Financier' ?></td>
+                    <td><a href="don-detail.php?id=<?= (int) $d['id'] ?>"><?= htmlspecialchars($donController->detail($d)) ?></a></td>
+                    <td><?= htmlspecialchars($d['moyen_paiement'] ?? '-') ?></td>
+                    <td><span class="badge <?= $statutsDon[$d['statut']][1] ?>"><?= $statutsDon[$d['statut']][0] ?></span></td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
           </div>
         </div>
 

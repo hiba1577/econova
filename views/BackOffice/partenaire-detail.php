@@ -2,11 +2,13 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/PartenaireController.php';
 require_once __DIR__ . '/../../controllers/PubliciteController.php';
+require_once __DIR__ . '/../../controllers/DonController.php';
 
 requireRole('admin');
 
 $partenaireController = new PartenaireController();
 $publiciteController = new PubliciteController();
+$donController = new DonController();
 
 $id = (int) ($_GET['id'] ?? 0);
 $partenaire = $partenaireController->getPartenaireById($id);
@@ -16,6 +18,20 @@ if (!$partenaire) {
     exit;
 }
 $publicites = $publiciteController->readPublicite($id);
+$dons = $donController->readDon('', $id);
+
+$total = 0;
+foreach ($dons as $d) {
+    if ($d['type_don'] === 'financier' && $d['statut'] === 'valide') {
+        $total += $d['montant'];
+    }
+}
+$statutsDon = [
+    'en_attente' => ['En attente', 'text-bg-warning'],
+    'valide' => ['Validé', 'text-bg-success'],
+    'refuse' => ['Refusé', 'text-bg-danger'],
+    'recu' => ['Reçu', 'text-bg-info']
+];
 
 $titre = 'Détail du partenaire';
 $menu = 'partenaires';
@@ -38,6 +54,7 @@ include __DIR__ . '/includes/header.php';
                   <dt class="col-sm-4">Statut</dt><dd class="col-sm-8"><span class="badge <?= $partenaire['statut'] === 'actif' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= htmlspecialchars(ucfirst($partenaire['statut'])) ?></span></dd>
                   <dt class="col-sm-4">Depuis le</dt><dd class="col-sm-8"><?= htmlspecialchars(date('d/m/Y', strtotime($partenaire['date_debut']))) ?></dd>
                   <dt class="col-sm-4">Description</dt><dd class="col-sm-8"><?= nl2br(htmlspecialchars($partenaire['description'] ?? '')) ?></dd>
+                  <dt class="col-sm-4">Dons financiers validés</dt><dd class="col-sm-8"><strong><?= htmlspecialchars(number_format($total, 2, ',', ' ')) ?> DT</strong></dd>
                 </dl>
               </div>
               <div class="card-footer d-flex gap-2">
@@ -71,6 +88,28 @@ include __DIR__ . '/includes/header.php';
                         <td><?= htmlspecialchars(date('d/m/Y', strtotime($pub['date_debut']))) ?> - <?= htmlspecialchars(date('d/m/Y', strtotime($pub['date_fin']))) ?></td>
                         <td><span class="badge <?= $pub['statut'] === 'active' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= htmlspecialchars(ucfirst($pub['statut'])) ?></span></td>
                         <td><a href="publicite-modifier.php?id=<?= (int) $pub['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a></td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card mb-4">
+              <div class="card-header"><h3 class="card-title">Dons reçus (<?= count($dons) ?>)</h3></div>
+              <div class="card-body p-0 table-responsive">
+                <table class="table table-striped mb-0">
+                  <thead><tr><th>Date</th><th>Donateur</th><th>Montant / détail</th><th>Statut</th></tr></thead>
+                  <tbody>
+                    <?php if (empty($dons)): ?>
+                      <tr><td colspan="4" class="text-center">Aucun don.</td></tr>
+                    <?php endif; ?>
+                    <?php foreach ($dons as $d): ?>
+                      <tr>
+                        <td><?= htmlspecialchars(date('d/m/Y', strtotime($d['date_don']))) ?></td>
+                        <td><?= $d['utilisateur_nom'] !== null ? htmlspecialchars($d['utilisateur_prenom'] . ' ' . $d['utilisateur_nom']) : '<em>Compte supprimé</em>' ?></td>
+                        <td><a href="don-detail.php?id=<?= (int) $d['id'] ?>"><?= htmlspecialchars($donController->detail($d)) ?></a></td>
+                        <td><span class="badge <?= $statutsDon[$d['statut']][1] ?>"><?= $statutsDon[$d['statut']][0] ?></span></td>
                       </tr>
                     <?php endforeach; ?>
                   </tbody>
