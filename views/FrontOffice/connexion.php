@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
+require_once __DIR__ . '/../../controllers/ProfilAccessibiliteController.php';
 
 if (estConnecte()) {
     header('Location: ' . ($_SESSION['user']['role'] === 'admin' ? '../BackOffice/dashboard.php' : 'mon-profil.php'));
@@ -30,7 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($utilisateur['statut'] === 'bloque') {
             $erreurs['general'] = 'Votre compte est bloqué. Contactez l\'administrateur de Vivora.';
         } else {
-            connecterUtilisateur($utilisateur);
+            $profilController = new ProfilAccessibiliteController();
+            connecterUtilisateur($utilisateur, $profilController->getProfilByUserId($utilisateur['id']));
             $_SESSION['message'] = 'Bienvenue ' . $utilisateur['prenom'] . ' !';
             if ($utilisateur['role'] === 'admin') {
                 header('Location: ../BackOffice/dashboard.php');

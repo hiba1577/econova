@@ -83,13 +83,14 @@ include __DIR__ . '/includes/header.php';
                   <th>Téléphone</th>
                   <th>Rôle</th>
                   <th>Statut</th>
+                  <th>Besoins</th>
                   <th>Inscription</th>
                   <th class="text-end">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <?php if (empty($utilisateurs)): ?>
-                  <tr><td colspan="8" class="text-center">Aucun utilisateur trouvé.</td></tr>
+                  <tr><td colspan="9" class="text-center">Aucun utilisateur trouvé.</td></tr>
                 <?php endif; ?>
                 <?php foreach ($utilisateurs as $u): ?>
                   <tr>
@@ -99,6 +100,11 @@ include __DIR__ . '/includes/header.php';
                     <td><?= htmlspecialchars($u['telephone']) ?></td>
                     <td><span class="badge <?= $u['role'] === 'admin' ? 'text-bg-dark' : 'text-bg-secondary' ?>"><?= htmlspecialchars($u['role']) ?></span></td>
                     <td><span class="badge <?= $u['statut'] === 'actif' ? 'text-bg-success' : 'text-bg-danger' ?>"><?= $u['statut'] === 'actif' ? 'Actif' : 'Bloqué' ?></span></td>
+                    <td>
+                      <?php if (!empty($u['besoin_visuel'])): ?><i class="bi bi-eye" title="Visuel"></i><?php endif; ?>
+                      <?php if (!empty($u['besoin_moteur'])): ?><i class="bi bi-person-wheelchair" title="Moteur"></i><?php endif; ?>
+                      <?php if (!empty($u['besoin_auditif'])): ?><i class="bi bi-ear" title="Auditif"></i><?php endif; ?>
+                    </td>
                     <td><?= htmlspecialchars(date('d/m/Y', strtotime($u['date_inscription']))) ?></td>
                     <td class="text-end text-nowrap">
                       <a href="utilisateur-detail.php?id=<?= (int) $u['id'] ?>" class="btn btn-sm btn-outline-secondary" title="Détail"><i class="bi bi-eye"></i></a>
@@ -115,7 +121,7 @@ include __DIR__ . '/includes/header.php';
                             <button type="submit" class="btn btn-sm btn-outline-success" title="Réactiver"><i class="bi bi-unlock"></i></button>
                           <?php endif; ?>
                         </form>
-                        <form method="post" action="utilisateur-supprimer.php" class="d-inline" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                        <form method="post" action="utilisateur-supprimer.php" class="d-inline" onsubmit="return confirm('Supprimer cet utilisateur et son profil ?');">
                           <?= champCsrf() ?>
                           <input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
                           <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>

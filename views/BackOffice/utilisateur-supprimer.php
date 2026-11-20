@@ -14,7 +14,7 @@ if ($id === (int) $_SESSION['user']['id']) {
     $_SESSION['erreur'] = 'Utilisateur introuvable.';
 } else {
     $utilisateurController->Delete($id);
-    $_SESSION['message'] = 'L\'utilisateur a été supprimé.';
+    $_SESSION['message'] = 'L\'utilisateur et son profil d\'accessibilité ont été supprimés.';
 }
 
 header('Location: utilisateurs-liste.php');

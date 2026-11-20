@@ -1,10 +1,12 @@
 <?php
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
+require_once __DIR__ . '/../../controllers/ProfilAccessibiliteController.php';
 
 requireAuth();
 
 $utilisateurController = new UtilisateurController();
+$profilController = new ProfilAccessibiliteController();
 $id = $_SESSION['user']['id'];
 $utilisateur = $utilisateurController->getUtilisateurById($id);
 
@@ -14,9 +16,12 @@ if (!$utilisateur) {
     exit;
 }
 
+$profil = $profilController->getProfilByUserId($id);
 $valeurs = $utilisateur;
+$valeursProfil = $profil ? $profil : ['besoin_visuel' => 0, 'besoin_moteur' => 0, 'besoin_auditif' => 0, 'taille_texte' => 'normal', 'contraste_fort' => 0, 'lecture_facile' => 0];
 $erreursInfos = [];
 $erreursMdp = [];
+$erreursProfil = [];
 $erreursSuppression = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -62,6 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    if ($action === 'accessibilite') {
+        $erreursProfil = $profilController->valider($_POST);
+        if (empty($erreursProfil)) {
+            $profilController->enregistrer($profilController->depuisFormulaire($_POST, $id));
+            majAccessibilite($profilController->getProfilByUserId($id));
+            $_SESSION['message'] = 'Votre profil d\'accessibilité a été enregistré.';
+            header('Location: mon-profil.php');
+            exit;
+        }
+    }
+
     if ($action === 'supprimer') {
         if ($utilisateur['role'] === 'admin') {
             $erreursSuppression['general'] = 'Un administrateur ne peut pas supprimer son propre compte.';
@@ -79,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $titre = 'Mon profil';
-$sousTitre = 'Mes informations et mon mot de passe';
+$sousTitre = 'Mes informations, mon mot de passe et mon profil d\'accessibilité';
 $pageActive = 'profil';
 include __DIR__ . '/includes/header.php';
 ?>
@@ -146,6 +162,47 @@ include __DIR__ . '/includes/header.php';
           </div>
 
           <div class="col-lg-6">
+            <form method="post" action="mon-profil.php" class="formulaire-vivora h-100" novalidate>
+              <?= champCsrf() ?>
+              <input type="hidden" name="action" value="accessibilite">
+              <h3 class="mb-3"><i class="bi bi-universal-access"></i> Mon profil d'accessibilité</h3>
+              <div class="mb-3">
+                <span class="form-label d-block">Mes besoins</span>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="besoin_visuel" name="besoin_visuel" value="1" <?= !empty($valeursProfil['besoin_visuel']) ? 'checked' : '' ?>>
+                  <label class="form-check-label" for="besoin_visuel">Visuel</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="besoin_moteur" name="besoin_moteur" value="1" <?= !empty($valeursProfil['besoin_moteur']) ? 'checked' : '' ?>>
+                  <label class="form-check-label" for="besoin_moteur">Moteur</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="besoin_auditif" name="besoin_auditif" value="1" <?= !empty($valeursProfil['besoin_auditif']) ? 'checked' : '' ?>>
+                  <label class="form-check-label" for="besoin_auditif">Auditif</label>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="taille_texte" class="form-label">Taille du texte</label>
+                <select id="taille_texte" name="taille_texte" class="form-select" data-regle="choix">
+                  <option value="normal" <?= $valeursProfil['taille_texte'] === 'normal' ? 'selected' : '' ?>>Normal</option>
+                  <option value="grand" <?= $valeursProfil['taille_texte'] === 'grand' ? 'selected' : '' ?>>Grand</option>
+                  <option value="tres-grand" <?= $valeursProfil['taille_texte'] === 'tres-grand' ? 'selected' : '' ?>>Très grand</option>
+                </select>
+                <div class="erreur-champ"><?= htmlspecialchars($erreursProfil['taille_texte'] ?? '') ?></div>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="contraste_fort" name="contraste_fort" value="1" <?= !empty($valeursProfil['contraste_fort']) ? 'checked' : '' ?>>
+                <label class="form-check-label" for="contraste_fort">Contraste fort</label>
+              </div>
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="lecture_facile" name="lecture_facile" value="1" <?= !empty($valeursProfil['lecture_facile']) ? 'checked' : '' ?>>
+                <label class="form-check-label" for="lecture_facile">Lecture facile</label>
+              </div>
+              <button type="submit" class="btn btn-vivora">Enregistrer mon profil</button>
+            </form>
+          </div>
+
+          <div class="col-lg-6">
             <form method="post" action="mon-profil.php" class="formulaire-vivora zone-danger h-100" novalidate onsubmit="return confirm('Voulez-vous vraiment supprimer votre compte ? Cette action est définitive.');">
               <?= champCsrf() ?>
               <input type="hidden" name="action" value="supprimer">
@@ -156,7 +213,7 @@ include __DIR__ . '/includes/header.php';
               <?php if ($utilisateur['role'] === 'admin'): ?>
                 <p>Un administrateur ne peut pas supprimer son propre compte.</p>
               <?php else: ?>
-                <p>Votre compte sera supprimé définitivement.</p>
+                <p>Votre compte et votre profil d'accessibilité seront supprimés définitivement.</p>
                 <div class="mb-3">
                   <label for="mot_de_passe_suppression" class="form-label">Confirmez avec votre mot de passe</label>
                   <input type="password" id="mot_de_passe_suppression" name="mot_de_passe_suppression" class="form-control" data-regle="requis">

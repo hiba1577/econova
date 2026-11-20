@@ -1,17 +1,19 @@
 <?php
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
+require_once __DIR__ . '/../../controllers/ProfilAccessibiliteController.php';
 
 requireRole('admin');
 
 $utilisateurController = new UtilisateurController();
+$profilController = new ProfilAccessibiliteController();
 $erreurs = [];
-$valeurs = ['role' => 'utilisateur', 'statut' => 'actif'];
+$valeurs = ['role' => 'utilisateur', 'statut' => 'actif', 'taille_texte' => 'normal'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verifierPost();
     $valeurs = $_POST;
-    $erreurs = $utilisateurController->valider($_POST);
+    $erreurs = array_merge($utilisateurController->valider($_POST), $profilController->valider($_POST));
 
     if (empty($erreurs)) {
         $utilisateur = new Utilisateur(
@@ -26,7 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
         $id = $utilisateurController->Create($utilisateur);
         if ($id) {
-            $_SESSION['message'] = 'L\'utilisateur a été ajouté.';
+            $profilController->Create($profilController->depuisFormulaire($_POST, $id));
+            $_SESSION['message'] = 'L\'utilisateur a été ajouté avec son profil d\'accessibilité.';
             header('Location: utilisateur-detail.php?id=' . $id);
             exit;
         }
@@ -41,7 +44,7 @@ include __DIR__ . '/includes/header.php';
         <form method="post" action="utilisateur-ajout.php" novalidate>
           <?= champCsrf() ?>
           <div class="row">
-            <div class="col-lg-9">
+            <div class="col-lg-7">
               <div class="card card-vivora mb-4">
                 <div class="card-header"><h3 class="card-title">Compte utilisateur</h3></div>
                 <div class="card-body">
@@ -98,7 +101,42 @@ include __DIR__ . '/includes/header.php';
               </div>
             </div>
 
-            <div class="col-12">
+            <div class="col-lg-5">
+              <div class="card card-vivora mb-4">
+                <div class="card-header"><h3 class="card-title">Profil d'accessibilité</h3></div>
+                <div class="card-body">
+                  <p class="mb-2 fw-semibold">Besoins</p>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="besoin_visuel" name="besoin_visuel" value="1" <?= !empty($valeurs['besoin_visuel']) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="besoin_visuel">Visuel</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="besoin_moteur" name="besoin_moteur" value="1" <?= !empty($valeurs['besoin_moteur']) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="besoin_moteur">Moteur</label>
+                  </div>
+                  <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="besoin_auditif" name="besoin_auditif" value="1" <?= !empty($valeurs['besoin_auditif']) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="besoin_auditif">Auditif</label>
+                  </div>
+                  <div class="mb-3">
+                    <label for="taille_texte" class="form-label">Taille du texte</label>
+                    <select id="taille_texte" name="taille_texte" class="form-select" data-regle="choix">
+                      <option value="normal" <?= ($valeurs['taille_texte'] ?? '') === 'normal' ? 'selected' : '' ?>>Normal</option>
+                      <option value="grand" <?= ($valeurs['taille_texte'] ?? '') === 'grand' ? 'selected' : '' ?>>Grand</option>
+                      <option value="tres-grand" <?= ($valeurs['taille_texte'] ?? '') === 'tres-grand' ? 'selected' : '' ?>>Très grand</option>
+                    </select>
+                    <div class="erreur-champ"><?= htmlspecialchars($erreurs['taille_texte'] ?? '') ?></div>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="contraste_fort" name="contraste_fort" value="1" <?= !empty($valeurs['contraste_fort']) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="contraste_fort">Contraste fort</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="lecture_facile" name="lecture_facile" value="1" <?= !empty($valeurs['lecture_facile']) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="lecture_facile">Lecture facile</label>
+                  </div>
+                </div>
+              </div>
               <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-vivora"><i class="bi bi-check-lg"></i> Ajouter</button>
                 <a href="utilisateurs-liste.php" class="btn btn-outline-secondary">Annuler</a>

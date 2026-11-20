@@ -4,7 +4,7 @@ $pageActive = $pageActive ?? '';
 $connecte = estConnecte();
 ?>
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="<?= htmlspecialchars(classesAccessibilite()) ?>">
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">

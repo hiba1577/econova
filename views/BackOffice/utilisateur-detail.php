@@ -1,10 +1,12 @@
 <?php
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
+require_once __DIR__ . '/../../controllers/ProfilAccessibiliteController.php';
 
 requireRole('admin');
 
 $utilisateurController = new UtilisateurController();
+$profilController = new ProfilAccessibiliteController();
 
 $id = (int) ($_GET['id'] ?? 0);
 $utilisateur = $utilisateurController->getUtilisateurById($id);
@@ -13,7 +15,10 @@ if (!$utilisateur) {
     header('Location: utilisateurs-liste.php');
     exit;
 }
+$profil = $profilController->getProfilByUserId($id);
 $moiMeme = $id === (int) $_SESSION['user']['id'];
+
+$tailles = ['normal' => 'Normal', 'grand' => 'Grand', 'tres-grand' => 'Très grand'];
 
 $titre = 'Détail de l\'utilisateur';
 $menu = 'utilisateurs';
@@ -21,7 +26,7 @@ include __DIR__ . '/includes/header.php';
 ?>
 
         <div class="row">
-          <div class="col-lg-8">
+          <div class="col-lg-6">
             <div class="card card-vivora mb-4">
               <div class="card-header">
                 <h3 class="card-title"><?= htmlspecialchars($utilisateur['prenom'] . ' ' . $utilisateur['nom']) ?></h3>
@@ -50,13 +55,33 @@ include __DIR__ . '/includes/header.php';
                       <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-unlock"></i> Réactiver</button>
                     <?php endif; ?>
                   </form>
-                  <form method="post" action="utilisateur-supprimer.php" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                  <form method="post" action="utilisateur-supprimer.php" onsubmit="return confirm('Supprimer cet utilisateur et son profil ?');">
                     <?= champCsrf() ?>
                     <input type="hidden" name="id" value="<?= $id ?>">
                     <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Supprimer</button>
                   </form>
                 <?php endif; ?>
                 <a href="utilisateurs-liste.php" class="btn btn-sm btn-outline-secondary ms-auto">Retour à la liste</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card card-vivora mb-4">
+              <div class="card-header"><h3 class="card-title">Profil d'accessibilité</h3></div>
+              <div class="card-body">
+                <?php if (!$profil): ?>
+                  <p class="mb-0">Aucun profil d'accessibilité.</p>
+                <?php else: ?>
+                  <dl class="row mb-0">
+                    <dt class="col-sm-5">Besoin visuel</dt><dd class="col-sm-7"><?= $profil['besoin_visuel'] ? 'Oui' : 'Non' ?></dd>
+                    <dt class="col-sm-5">Besoin moteur</dt><dd class="col-sm-7"><?= $profil['besoin_moteur'] ? 'Oui' : 'Non' ?></dd>
+                    <dt class="col-sm-5">Besoin auditif</dt><dd class="col-sm-7"><?= $profil['besoin_auditif'] ? 'Oui' : 'Non' ?></dd>
+                    <dt class="col-sm-5">Taille du texte</dt><dd class="col-sm-7"><?= htmlspecialchars($tailles[$profil['taille_texte']]) ?></dd>
+                    <dt class="col-sm-5">Contraste fort</dt><dd class="col-sm-7"><?= $profil['contraste_fort'] ? 'Oui' : 'Non' ?></dd>
+                    <dt class="col-sm-5">Lecture facile</dt><dd class="col-sm-7"><?= $profil['lecture_facile'] ? 'Oui' : 'Non' ?></dd>
+                  </dl>
+                <?php endif; ?>
               </div>
             </div>
           </div>

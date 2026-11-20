@@ -29,7 +29,7 @@
         <div class="col-lg-3 col-md-3 footer-links">
           <h4>Nos services</h4>
           <ul>
-            <li><a href="index.php#services">Comptes utilisateurs</a></li>
+            <li><a href="index.php#services">Profils et accessibilité</a></li>
             <li><a href="index.php#services">Activités adaptées</a></li>
             <li><a href="index.php#services">Rendez-vous</a></li>
             <li><a href="index.php#services">Lieux et événements</a></li>

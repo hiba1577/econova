@@ -10,6 +10,7 @@ $nbUtilisateurs = $utilisateurController->compterUtilisateurs();
 $nbBloques = $utilisateurController->compterBloques();
 $nbActifs = $nbUtilisateurs - $nbBloques;
 $derniersInscrits = array_slice($utilisateurController->rechercherUtilisateurs('', '', '', 'recent'), 0, 5);
+$besoins = $utilisateurController->compterParBesoin();
 
 $titre = 'Tableau de bord';
 $menu = 'dashboard';
@@ -49,6 +50,8 @@ include __DIR__ . '/includes/header.php';
           </div>
         </div>
 
+        <div class="row">
+          <div class="col-lg-8">
         <div class="card mb-4">
           <div class="card-header">
             <h3 class="card-title">Derniers inscrits</h3>
@@ -74,6 +77,21 @@ include __DIR__ . '/includes/header.php';
                 <?php endforeach; ?>
               </tbody>
             </table>
+          </div>
+        </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card mb-4">
+              <div class="card-header"><h3 class="card-title">Besoins d'accessibilité</h3></div>
+              <div class="card-body">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex justify-content-between"><span><i class="bi bi-eye"></i> Visuel</span><span class="badge text-bg-vivora"><?= (int) $besoins['visuel'] ?></span></li>
+                  <li class="list-group-item d-flex justify-content-between"><span><i class="bi bi-person-wheelchair"></i> Moteur</span><span class="badge text-bg-vivora"><?= (int) $besoins['moteur'] ?></span></li>
+                  <li class="list-group-item d-flex justify-content-between"><span><i class="bi bi-ear"></i> Auditif</span><span class="badge text-bg-vivora"><?= (int) $besoins['auditif'] ?></span></li>
+                </ul>
+                <a href="utilisateurs-par-besoin.php" class="btn btn-outline-vivora btn-sm mt-3">Voir le détail</a>
+              </div>
+            </div>
           </div>
         </div>
 

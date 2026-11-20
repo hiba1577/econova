@@ -19,7 +19,7 @@ if (isset($_SESSION['derniere_activite']) && time() - $_SESSION['derniere_activi
 }
 $_SESSION['derniere_activite'] = time();
 
-function connecterUtilisateur($utilisateur)
+function connecterUtilisateur($utilisateur, $profil)
 {
     session_regenerate_id(true);
     $_SESSION['user'] = [
@@ -29,7 +29,39 @@ function connecterUtilisateur($utilisateur)
         'email' => $utilisateur['email'],
         'role' => $utilisateur['role']
     ];
+    majAccessibilite($profil);
     unset($_SESSION['csrf_token']);
+}
+
+function majAccessibilite($profil)
+{
+    $_SESSION['accessibilite'] = [
+        'taille_texte' => $profil ? $profil['taille_texte'] : 'normal',
+        'contraste_fort' => $profil ? (int) $profil['contraste_fort'] : 0,
+        'lecture_facile' => $profil ? (int) $profil['lecture_facile'] : 0
+    ];
+}
+
+function classesAccessibilite()
+{
+    if (!isset($_SESSION['accessibilite'])) {
+        return '';
+    }
+    $classes = [];
+    $a = $_SESSION['accessibilite'];
+    if ($a['taille_texte'] === 'grand') {
+        $classes[] = 'texte-grand';
+    }
+    if ($a['taille_texte'] === 'tres-grand') {
+        $classes[] = 'texte-tres-grand';
+    }
+    if ($a['contraste_fort']) {
+        $classes[] = 'contraste-fort';
+    }
+    if ($a['lecture_facile']) {
+        $classes[] = 'lecture-facile';
+    }
+    return implode(' ', $classes);
 }
 
 function estConnecte()
