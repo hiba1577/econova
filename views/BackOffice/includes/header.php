@@ -2,6 +2,7 @@
 $titre = $titre ?? 'Back office';
 $menu = $menu ?? '';
 $groupeUtilisateurs = in_array($menu, ['utilisateurs', 'utilisateur-ajout', 'par-besoin'], true);
+$groupePartenariats = in_array($menu, ['partenaires', 'partenaire-ajout', 'publicites', 'publicite-ajout'], true);
 ?>
 <!DOCTYPE html>
 <html lang="fr" class="<?= htmlspecialchars(classesAccessibilite()) ?>">
@@ -87,13 +88,25 @@ $groupeUtilisateurs = in_array($menu, ['utilisateurs', 'utilisateur-ajout', 'par
             </ul>
           </li>
 
-          <li class="nav-header">AUTRES MODULES</li>
-
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon bi bi-grid"></i>
-              <p>Autres modules</p>
+          <li class="nav-item <?= $groupePartenariats ? 'menu-open' : '' ?>">
+            <a href="#" class="nav-link <?= $groupePartenariats ? 'active' : '' ?>">
+              <i class="nav-icon bi bi-building"></i>
+              <p>Partenariats <i class="nav-arrow bi bi-chevron-right"></i></p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="partenaires-liste.php" class="nav-link <?= $menu === 'partenaires' ? 'active' : '' ?>"><i class="nav-icon bi bi-circle"></i><p>Partenaires</p></a>
+              </li>
+              <li class="nav-item">
+                <a href="partenaire-ajout.php" class="nav-link <?= $menu === 'partenaire-ajout' ? 'active' : '' ?>"><i class="nav-icon bi bi-circle"></i><p>Ajouter un partenaire</p></a>
+              </li>
+              <li class="nav-item">
+                <a href="publicites-liste.php" class="nav-link <?= $menu === 'publicites' ? 'active' : '' ?>"><i class="nav-icon bi bi-circle"></i><p>Publicités</p></a>
+              </li>
+              <li class="nav-item">
+                <a href="publicite-ajout.php" class="nav-link <?= $menu === 'publicite-ajout' ? 'active' : '' ?>"><i class="nav-icon bi bi-circle"></i><p>Ajouter une publicité</p></a>
+              </li>
+            </ul>
           </li>
         </ul>
       </nav>

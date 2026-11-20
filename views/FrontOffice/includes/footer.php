@@ -20,6 +20,7 @@
           <h4>Liens utiles</h4>
           <ul>
             <li><a href="index.php">Accueil</a></li>
+            <li><a href="partenaires.php">Partenaires</a></li>
             <li><a href="inscription.php">Créer un compte</a></li>
             <li><a href="connexion.php">Connexion</a></li>
             <li><a href="mon-profil.php">Mon profil</a></li>
