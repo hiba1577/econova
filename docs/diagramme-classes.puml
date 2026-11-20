@@ -1,0 +1,257 @@
+@startuml diagramme-classes
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F6F4EE
+  BorderColor #1F7A72
+  ArrowColor #123B3A
+  HeaderBackgroundColor #E3EFEA
+}
+
+title Vivora - Module 1 : diagramme de classes
+
+enum Role {
+  utilisateur
+  admin
+}
+
+enum StatutUtilisateur {
+  actif
+  bloque
+}
+
+enum TailleTexte {
+  normal
+  grand
+  tres-grand
+}
+
+enum TypePartenaire {
+  association
+  clinique
+  pharmacie
+  sponsor
+}
+
+enum MoyenPaiement {
+  carte
+  virement
+  especes
+}
+
+enum StatutDon {
+  en_attente
+  valide
+  refuse
+  recu
+}
+
+enum TypeDon {
+  financier
+  physique
+}
+
+enum CategorieDonPhysique {
+  sang
+  equipement
+  medicament
+  service
+  autre
+}
+
+class Utilisateur {
+  - id : int
+  - nom : string
+  - prenom : string
+  - email : string
+  - motDePasse : string
+  - telephone : string
+  - role : Role
+  - statut : StatutUtilisateur
+  - dateInscription : datetime
+  + __construct(id, nom, prenom, email, motDePasse, telephone, role, statut, dateInscription)
+  + getters / setters()
+}
+
+class ProfilAccessibilite {
+  - id : int
+  - userId : int
+  - besoinVisuel : bool
+  - besoinMoteur : bool
+  - besoinAuditif : bool
+  - tailleTexte : TailleTexte
+  - contrasteFort : bool
+  - lectureFacile : bool
+  + __construct(id, userId, besoinVisuel, besoinMoteur, besoinAuditif, tailleTexte, contrasteFort, lectureFacile)
+  + getters / setters()
+}
+
+class Partenaire {
+  - id : int
+  - nom : string
+  - type : TypePartenaire
+  - email : string
+  - telephone : string
+  - adresse : string
+  - description : string
+  - logo : string
+  - statut : string
+  - dateDebut : date
+  + __construct(id, nom, type, email, telephone, adresse, description, logo, statut, dateDebut)
+  + getters / setters()
+}
+
+class Publicite {
+  - id : int
+  - partenaireId : int
+  - titre : string
+  - description : string
+  - image : string
+  - lien : string
+  - dateDebut : date
+  - dateFin : date
+  - statut : string
+  + __construct(id, partenaireId, titre, description, image, lien, dateDebut, dateFin, statut)
+  + getters / setters()
+}
+
+class Don {
+  - id : int
+  - utilisateurId : int
+  - partenaireId : int
+  - montant : decimal [0..1]
+  - dateDon : datetime
+  - moyenPaiement : MoyenPaiement [0..1]
+  - message : string
+  - statut : StatutDon
+  - typeDon : TypeDon
+  + __construct(id, utilisateurId, partenaireId, montant, dateDon, moyenPaiement, message, statut, typeDon)
+  + getters / setters()
+}
+
+class DonPhysique {
+  - id : int
+  - donId : int
+  - categorie : CategorieDonPhysique
+  - groupeSanguin : string
+  - dateDisponibilite : date
+  - typeEquipement : string
+  - etat : string
+  - quantite : int
+  - nomMedicament : string
+  - dateExpiration : date
+  - emballageFerme : bool
+  - domaineService : string
+  - disponibilites : string
+  - heuresParMois : int
+  - modeRemise : string
+  - adresseRecuperation : string
+  - description : string
+  - autreArticle : string
+  + __construct(id, donId, categorie, ...)
+  + getters / setters()
+}
+
+class UtilisateurController {
+  + readUtilisateur() : array
+  + getUtilisateurById(id) : array
+  + Create(Utilisateur u) : int
+  + Update(Utilisateur u, id) : bool
+  + Delete(id) : bool
+  + verifierConnexion(email, motDePasse)
+  + changerStatut(id, statut)
+  + changerMotDePasse(id, motDePasse)
+  + rechercherUtilisateurs(recherche, role, statut, tri)
+  + readUtilisateursParBesoin(besoin)
+  + valider(donnees, idExclu, avecMotDePasse) : array
+}
+
+class ProfilAccessibiliteController {
+  + readProfilAccessibilite() : array
+  + getProfilAccessibiliteById(id) : array
+  + getProfilByUserId(userId) : array
+  + Create(ProfilAccessibilite p) : int
+  + Update(ProfilAccessibilite p, id) : bool
+  + Delete(id) : bool
+  + valider(donnees) : array
+}
+
+class PartenaireController {
+  + readPartenaire() : array
+  + readPartenairesActifs(type) : array
+  + getPartenaireById(id) : array
+  + Create(Partenaire p) : int
+  + Update(Partenaire p, id) : bool
+  + Delete(id) : bool
+  + uploadLogo(fichier) : array
+  + valider(donnees) : array
+}
+
+class PubliciteController {
+  + readPublicite(partenaireId, statut) : array
+  + readPublicitesActives(partenaireId) : array
+  + getPubliciteById(id) : array
+  + Create(Publicite p) : int
+  + Update(Publicite p, id) : bool
+  + Delete(id) : bool
+  + changerStatut(id, statut)
+  + uploadImage(fichier) : array
+  + valider(donnees, partenairesValides) : array
+}
+
+class DonController {
+  + readDon(statut, partenaireId) : array
+  + getDonById(id) : array
+  + readDonsByUtilisateur(utilisateurId) : array
+  + getDonDetail(id) : array
+  + Create(Don d) : int
+  + CreatePhysique(Don d, DonPhysique dp) : int
+  + Update(Don d, id) : bool
+  + Delete(id) : bool
+  + changerStatut(id, statut)
+  + totalValide() : float
+  + compterPhysiques() : int
+  + donsParPartenaire() : array
+  + detail(don) : string
+  + valider(donnees, partenairesValides, partenairesSante) : array
+}
+
+class DonPhysiqueController {
+  + readDonPhysique(categorie) : array
+  + getDonPhysiqueById(id) : array
+  + getByDonId(donId) : array
+  + Create(DonPhysique d) : int
+  + Update(DonPhysique d, id) : bool
+  + Delete(id) : bool
+  + statistiquesParCategorie() : array
+  + resume(don) : string
+  + depuisFormulaire(donnees, donId) : DonPhysique
+  + valider(donnees, partenairesValides, partenairesSante) : array
+}
+
+class config {
+  - {static} pdo : PDO
+  + {static} getConnexion() : PDO
+}
+
+Utilisateur "1" -- "0..1" ProfilAccessibilite : possède >
+Partenaire "1" *-- "0..*" Publicite : publie >
+Partenaire "1" -- "0..*" Don : reçoit >
+Utilisateur "1" -- "0..*" Don : fait >
+Don "1" *-- "0..1" DonPhysique : détaille >
+
+UtilisateurController ..> Utilisateur
+ProfilAccessibiliteController ..> ProfilAccessibilite
+PartenaireController ..> Partenaire
+PubliciteController ..> Publicite
+DonController ..> Don
+DonController ..> DonPhysiqueController : transaction
+DonPhysiqueController ..> DonPhysique
+DonPhysiqueController ..> config
+
+UtilisateurController ..> config
+ProfilAccessibiliteController ..> config
+PartenaireController ..> config
+PubliciteController ..> config
+DonController ..> config
+
+@enduml
