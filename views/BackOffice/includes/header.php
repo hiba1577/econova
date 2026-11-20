@@ -1,10 +1,10 @@
 <?php
 $titre = $titre ?? 'Back office';
 $menu = $menu ?? '';
-$groupeUtilisateurs = in_array($menu, ['utilisateurs', 'utilisateur-ajout'], true);
+$groupeUtilisateurs = in_array($menu, ['utilisateurs', 'utilisateur-ajout', 'par-besoin'], true);
 ?>
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="<?= htmlspecialchars(classesAccessibilite()) ?>">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -80,6 +80,9 @@ $groupeUtilisateurs = in_array($menu, ['utilisateurs', 'utilisateur-ajout'], tru
               </li>
               <li class="nav-item">
                 <a href="utilisateur-ajout.php" class="nav-link <?= $menu === 'utilisateur-ajout' ? 'active' : '' ?>"><i class="nav-icon bi bi-circle"></i><p>Ajouter un utilisateur</p></a>
+              </li>
+              <li class="nav-item">
+                <a href="utilisateurs-par-besoin.php" class="nav-link <?= $menu === 'par-besoin' ? 'active' : '' ?>"><i class="nav-icon bi bi-circle"></i><p>Utilisateurs par besoin</p></a>
               </li>
             </ul>
           </li>

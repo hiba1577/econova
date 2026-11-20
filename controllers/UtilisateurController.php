@@ -162,8 +162,9 @@ class UtilisateurController
         ];
         $ordre = isset($tris[$tri]) ? $tris[$tri] : $tris['recent'];
 
-        $sql = 'SELECT u.*
+        $sql = 'SELECT u.*, p.besoin_visuel, p.besoin_moteur, p.besoin_auditif, p.taille_texte
                 FROM utilisateur u
+                LEFT JOIN profil_accessibilite p ON p.user_id = u.id
                 WHERE 1 = 1';
         $params = [];
         if ($recherche !== '') {
@@ -190,6 +191,43 @@ class UtilisateurController
         } catch (Exception $e) {
             echo 'Error ' . $e->getMessage();
             return [];
+        }
+    }
+
+    public function readUtilisateursParBesoin($besoin)
+    {
+        $colonnes = [
+            'visuel' => 'p.besoin_visuel = 1',
+            'moteur' => 'p.besoin_moteur = 1',
+            'auditif' => 'p.besoin_auditif = 1'
+        ];
+        $condition = isset($colonnes[$besoin]) ? $colonnes[$besoin] : '(p.besoin_visuel = 1 OR p.besoin_moteur = 1 OR p.besoin_auditif = 1)';
+
+        $sql = 'SELECT u.id, u.nom, u.prenom, u.email, u.statut, p.besoin_visuel, p.besoin_moteur,
+                p.besoin_auditif, p.taille_texte, p.contraste_fort, p.lecture_facile
+                FROM utilisateur u
+                INNER JOIN profil_accessibilite p ON p.user_id = u.id
+                WHERE ' . $condition . ' ORDER BY u.nom';
+        $db = config::getConnexion();
+        try {
+            $query = $db->query($sql);
+            return $query->fetchAll();
+        } catch (Exception $e) {
+            echo 'Error ' . $e->getMessage();
+            return [];
+        }
+    }
+
+    public function compterParBesoin()
+    {
+        $sql = 'SELECT SUM(p.besoin_visuel) AS visuel, SUM(p.besoin_moteur) AS moteur, SUM(p.besoin_auditif) AS auditif
+                FROM utilisateur u INNER JOIN profil_accessibilite p ON p.user_id = u.id';
+        $db = config::getConnexion();
+        try {
+            return $db->query($sql)->fetch();
+        } catch (Exception $e) {
+            echo 'Error ' . $e->getMessage();
+            return ['visuel' => 0, 'moteur' => 0, 'auditif' => 0];
         }
     }
 

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
+require_once __DIR__ . '/../../controllers/ProfilAccessibiliteController.php';
 
 if (estConnecte()) {
     header('Location: mon-profil.php');
@@ -8,13 +9,14 @@ if (estConnecte()) {
 }
 
 $utilisateurController = new UtilisateurController();
+$profilController = new ProfilAccessibiliteController();
 $erreurs = [];
-$valeurs = [];
+$valeurs = ['taille_texte' => 'normal'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verifierPost();
     $valeurs = $_POST;
-    $erreurs = $utilisateurController->valider($_POST);
+    $erreurs = array_merge($utilisateurController->valider($_POST), $profilController->valider($_POST));
 
     if (empty($erreurs)) {
         $utilisateur = new Utilisateur(
@@ -29,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
         $id = $utilisateurController->Create($utilisateur);
         if ($id) {
+            $profilController->Create($profilController->depuisFormulaire($_POST, $id));
             $_SESSION['message'] = 'Votre compte a été créé. Vous pouvez maintenant vous connecter.';
             header('Location: connexion.php');
             exit;
@@ -37,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $titre = 'Créer un compte';
-$sousTitre = 'Un seul compte pour tout Vivora';
+$sousTitre = 'Un compte et un profil d\'accessibilité pour tout Vivora';
 $pageActive = 'inscription';
 include __DIR__ . '/includes/header.php';
 ?>
@@ -81,6 +84,45 @@ include __DIR__ . '/includes/header.php';
                   <label for="confirmation" class="form-label">Confirmer le mot de passe</label>
                   <input type="password" id="confirmation" name="confirmation" class="form-control" data-regle="confirmation" data-champ="mot_de_passe">
                   <div class="erreur-champ"><?= htmlspecialchars($erreurs['confirmation'] ?? '') ?></div>
+                </div>
+              </div>
+
+              <h3 class="mt-4 mb-3">Mon profil d'accessibilité</h3>
+              <p class="text-muted">Ces réglages s'appliquent à toutes les pages du site dès votre connexion.</p>
+              <div class="mb-3">
+                <span class="form-label d-block">Mes besoins</span>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="besoin_visuel" name="besoin_visuel" value="1" <?= !empty($valeurs['besoin_visuel']) ? 'checked' : '' ?>>
+                  <label class="form-check-label" for="besoin_visuel">Visuel</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="besoin_moteur" name="besoin_moteur" value="1" <?= !empty($valeurs['besoin_moteur']) ? 'checked' : '' ?>>
+                  <label class="form-check-label" for="besoin_moteur">Moteur</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="besoin_auditif" name="besoin_auditif" value="1" <?= !empty($valeurs['besoin_auditif']) ? 'checked' : '' ?>>
+                  <label class="form-check-label" for="besoin_auditif">Auditif</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="taille_texte" class="form-label">Taille du texte</label>
+                  <select id="taille_texte" name="taille_texte" class="form-select" data-regle="choix">
+                    <option value="normal" <?= ($valeurs['taille_texte'] ?? '') === 'normal' ? 'selected' : '' ?>>Normal</option>
+                    <option value="grand" <?= ($valeurs['taille_texte'] ?? '') === 'grand' ? 'selected' : '' ?>>Grand</option>
+                    <option value="tres-grand" <?= ($valeurs['taille_texte'] ?? '') === 'tres-grand' ? 'selected' : '' ?>>Très grand</option>
+                  </select>
+                  <div class="erreur-champ"><?= htmlspecialchars($erreurs['taille_texte'] ?? '') ?></div>
+                </div>
+                <div class="col-md-6 mb-3 d-flex flex-column justify-content-end">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="contraste_fort" name="contraste_fort" value="1" <?= !empty($valeurs['contraste_fort']) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="contraste_fort">Contraste fort</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="lecture_facile" name="lecture_facile" value="1" <?= !empty($valeurs['lecture_facile']) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="lecture_facile">Lecture facile</label>
+                  </div>
                 </div>
               </div>
 
