@@ -54,7 +54,7 @@ $connecte = estConnecte();
         <nav id="navmenu" class="navmenu">
           <ul>
             <li><a href="index.php" class="<?= $pageActive === 'accueil' ? 'active' : '' ?>">Accueil</a></li>
-            <li><a href="#">Autres modules</a></li>
+            <li><a href="partenaires.php" class="<?= $pageActive === 'partenaires' ? 'active' : '' ?>">Partenaires</a></li>
             <?php if ($connecte): ?>
               <li><a href="mon-profil.php" class="<?= $pageActive === 'profil' ? 'active' : '' ?>">Mon profil</a></li>
               <?php if ($_SESSION['user']['role'] === 'admin'): ?>

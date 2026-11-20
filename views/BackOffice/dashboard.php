@@ -1,10 +1,16 @@
 <?php
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
+require_once __DIR__ . '/../../controllers/PartenaireController.php';
+require_once __DIR__ . '/../../controllers/PubliciteController.php';
 
 requireRole('admin');
 
 $utilisateurController = new UtilisateurController();
+$partenaireController = new PartenaireController();
+$publiciteController = new PubliciteController();
+$nbPartenaires = $partenaireController->compterPartenaires();
+$nbPublicites = $publiciteController->compterActives();
 
 $nbUtilisateurs = $utilisateurController->compterUtilisateurs();
 $nbBloques = $utilisateurController->compterBloques();
@@ -46,6 +52,26 @@ include __DIR__ . '/includes/header.php';
               </div>
               <i class="small-box-icon bi bi-person-lock"></i>
               <a href="utilisateurs-liste.php?statut=bloque" class="small-box-footer link-light link-underline-opacity-0">Voir les comptes <i class="bi bi-arrow-right-circle"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="small-box text-bg-info">
+              <div class="inner">
+                <h3><?= (int) $nbPartenaires ?></h3>
+                <p>Partenaires</p>
+              </div>
+              <i class="small-box-icon bi bi-building"></i>
+              <a href="partenaires-liste.php" class="small-box-footer link-light link-underline-opacity-0">Voir les partenaires <i class="bi bi-arrow-right-circle"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="small-box text-bg-primary">
+              <div class="inner">
+                <h3><?= (int) $nbPublicites ?></h3>
+                <p>Publicités actives</p>
+              </div>
+              <i class="small-box-icon bi bi-megaphone"></i>
+              <a href="publicites-liste.php" class="small-box-footer link-light link-underline-opacity-0">Voir les publicités <i class="bi bi-arrow-right-circle"></i></a>
             </div>
           </div>
         </div>
