@@ -1,0 +1,204 @@
+:root {
+  --vivora-fonce: #123B3A;
+  --vivora-principal: #1F7A72;
+  --vivora-clair: #7FCFC2;
+  --vivora-pale: #E3EFEA;
+  --vivora-creme: #F6F4EE;
+  --vivora-corail: #E07A5F;
+}
+
+body.bg-body-tertiary {
+  background-color: var(--vivora-creme) !important;
+}
+
+.app-sidebar.sidebar-vivora {
+  background-color: var(--vivora-fonce) !important;
+}
+
+.sidebar-vivora .sidebar-brand {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-vivora .sidebar-menu .nav-link.active,
+.sidebar-vivora .sidebar-menu .nav-treeview .nav-link.active {
+  background-color: var(--vivora-principal) !important;
+  color: #fff !important;
+}
+
+.sidebar-vivora .nav-header {
+  color: var(--vivora-clair) !important;
+}
+
+.text-bg-vivora {
+  background-color: var(--vivora-principal) !important;
+  color: #fff !important;
+}
+
+.btn-vivora {
+  background-color: var(--vivora-principal);
+  border-color: var(--vivora-principal);
+  color: #fff;
+}
+
+.btn-vivora:hover,
+.btn-vivora:focus {
+  background-color: var(--vivora-fonce);
+  border-color: var(--vivora-fonce);
+  color: #fff;
+}
+
+.btn-outline-vivora {
+  border: 1px solid var(--vivora-principal);
+  color: var(--vivora-principal);
+}
+
+.btn-outline-vivora:hover {
+  background-color: var(--vivora-principal);
+  color: #fff;
+}
+
+.card-vivora {
+  border-top: 3px solid var(--vivora-principal);
+}
+
+.card-vivora > .card-header {
+  background-color: var(--vivora-pale);
+}
+
+.small-box.text-bg-warning .small-box-footer {
+  color: #123B3A;
+}
+
+.erreur-champ {
+  color: #b3261e;
+  font-size: 0.875rem;
+  min-height: 1.2em;
+  margin-top: 4px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--vivora-principal);
+  box-shadow: 0 0 0 0.2rem rgba(31, 122, 114, 0.25);
+}
+
+.form-check-input:checked {
+  background-color: var(--vivora-principal);
+  border-color: var(--vivora-principal);
+}
+
+.vignette {
+  width: 60px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.vignette.grande {
+  width: 140px;
+  height: 100px;
+}
+
+.user-header.text-bg-vivora small {
+  color: var(--vivora-pale);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--vivora-corail);
+  outline-offset: 2px;
+}
+
+html.texte-grand {
+  font-size: 112.5%;
+}
+
+html.texte-tres-grand {
+  font-size: 125%;
+}
+
+html.contraste-fort body,
+html.contraste-fort .app-header,
+html.contraste-fort .app-main,
+html.contraste-fort .app-footer,
+html.contraste-fort .card,
+html.contraste-fort .card-header,
+html.contraste-fort .card-footer {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+html.contraste-fort .app-sidebar.sidebar-vivora {
+  background-color: #000000 !important;
+  border-right: 2px solid #ffffff;
+}
+
+html.contraste-fort a {
+  color: #ffd60a;
+}
+
+html.contraste-fort .table {
+  --bs-table-bg: #000000;
+  --bs-table-color: #ffffff;
+  --bs-table-striped-bg: #1a1a1a;
+  --bs-table-striped-color: #ffffff;
+  --bs-table-hover-bg: #222222;
+  --bs-table-hover-color: #ffffff;
+}
+
+html.contraste-fort .form-control,
+html.contraste-fort .form-select {
+  background-color: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+html.contraste-fort .text-muted,
+html.contraste-fort .form-text,
+html.contraste-fort .breadcrumb-item.active {
+  color: #ffffff !important;
+}
+
+html.contraste-fort .btn-vivora {
+  background-color: #ffd60a;
+  border-color: #ffd60a;
+  color: #000000;
+}
+
+html.contraste-fort .erreur-champ {
+  color: #ff8a80;
+}
+
+html.lecture-facile body,
+html.lecture-facile .card,
+html.lecture-facile .btn,
+html.lecture-facile .nav-link {
+  font-family: Verdana, Arial, sans-serif !important;
+  letter-spacing: 0.04em;
+  word-spacing: 0.12em;
+}
+
+html.lecture-facile p,
+html.lecture-facile td,
+html.lecture-facile dd {
+  line-height: 1.8;
+}
+
+html.lecture-facile *,
+html.lecture-facile *::before,
+html.lecture-facile *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+.text-bg-vivora-corail {
+  background-color: var(--vivora-corail) !important;
+  color: #fff !important;
+}
+
+html.contraste-fort .small-box {
+  border: 2px solid #ffffff;
+}
