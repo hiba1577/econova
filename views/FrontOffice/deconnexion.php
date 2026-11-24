@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../session.php';
 
-if (!verifyCsrfToken($_GET['jeton'] ?? '') && !verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+if (!verifierJeton($_GET['jeton'] ?? '')) {
     header('Location: index.php');
     exit;
 }

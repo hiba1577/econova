@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 require_once __DIR__ . '/../../controllers/ProfilAccessibiliteController.php';
 
-requireAuth();
+exigerConnexion();
 
 $utilisateurController = new UtilisateurController();
 $profilController = new ProfilAccessibiliteController();
@@ -25,19 +25,19 @@ $erreursProfil = [];
 $erreursSuppression = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifierPost();
+    verifierFormulaire();
     $action = $_POST['action'] ?? '';
 
     if ($action === 'infos') {
         $valeurs = array_merge($utilisateur, $_POST);
-        $erreursInfos = $utilisateurController->valider($_POST, $id, false);
+        $erreursInfos = $utilisateurController->validerUtilisateur($_POST, $id, false);
         if (empty($erreursInfos)) {
             $modifie = new Utilisateur(
                 $id,
                 trim($_POST['nom']),
                 trim($_POST['prenom']),
                 trim($_POST['email']),
-                $utilisateur['mot_de_passe'],
+                '',
                 trim($_POST['telephone']),
                 $utilisateur['role'],
                 $utilisateur['statut']
@@ -106,7 +106,7 @@ include __DIR__ . '/includes/header.php';
 
           <div class="col-lg-6">
             <form method="post" action="mon-profil.php" class="formulaire-vivora h-100" novalidate>
-              <?= champCsrf() ?>
+              <?= champJeton() ?>
               <input type="hidden" name="action" value="infos">
               <h3 class="mb-3"><i class="bi bi-person"></i> Mes informations</h3>
               <div class="row">
@@ -138,7 +138,7 @@ include __DIR__ . '/includes/header.php';
 
           <div class="col-lg-6">
             <form method="post" action="mon-profil.php" class="formulaire-vivora h-100" novalidate>
-              <?= champCsrf() ?>
+              <?= champJeton() ?>
               <input type="hidden" name="action" value="motdepasse">
               <h3 class="mb-3"><i class="bi bi-key"></i> Changer mon mot de passe</h3>
               <div class="mb-3">
@@ -163,7 +163,7 @@ include __DIR__ . '/includes/header.php';
 
           <div class="col-lg-6">
             <form method="post" action="mon-profil.php" class="formulaire-vivora h-100" novalidate>
-              <?= champCsrf() ?>
+              <?= champJeton() ?>
               <input type="hidden" name="action" value="accessibilite">
               <h3 class="mb-3"><i class="bi bi-universal-access"></i> Mon profil d'accessibilité</h3>
               <div class="mb-3">
@@ -204,7 +204,7 @@ include __DIR__ . '/includes/header.php';
 
           <div class="col-lg-6">
             <form method="post" action="mon-profil.php" class="formulaire-vivora zone-danger h-100" novalidate onsubmit="return confirm('Voulez-vous vraiment supprimer votre compte ? Cette action est définitive.');">
-              <?= champCsrf() ?>
+              <?= champJeton() ?>
               <input type="hidden" name="action" value="supprimer">
               <h3 class="mb-3"><i class="bi bi-trash"></i> Supprimer mon compte</h3>
               <?php if (isset($erreursSuppression['general'])): ?>

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $recherche = trim($_GET['recherche'] ?? '');
 $role = $_GET['role'] ?? '';
@@ -28,7 +28,7 @@ include __DIR__ . '/includes/header.php';
             <h3 class="card-title">Rechercher, filtrer et trier</h3>
           </div>
           <div class="card-body">
-            <form method="get" action="utilisateurs-liste.php" class="row g-3 align-items-end">
+            <form method="get" action="utilisateurs-liste.php" class="row g-3 align-items-end" novalidate>
               <div class="col-md-4">
                 <label for="recherche" class="form-label">Recherche</label>
                 <input type="text" id="recherche" name="recherche" class="form-control" placeholder="Nom, prénom ou e-mail" value="<?= htmlspecialchars($recherche) ?>">
@@ -111,7 +111,7 @@ include __DIR__ . '/includes/header.php';
                       <a href="utilisateur-modifier.php?id=<?= (int) $u['id'] ?>" class="btn btn-sm btn-outline-primary" title="Modifier"><i class="bi bi-pencil"></i></a>
                       <?php if ((int) $u['id'] !== (int) $_SESSION['user']['id']): ?>
                         <form method="post" action="utilisateur-statut.php" class="d-inline">
-                          <?= champCsrf() ?>
+                          <?= champJeton() ?>
                           <input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
                           <?php if ($u['statut'] === 'actif'): ?>
                             <input type="hidden" name="statut" value="bloque">
@@ -121,8 +121,14 @@ include __DIR__ . '/includes/header.php';
                             <button type="submit" class="btn btn-sm btn-outline-success" title="Réactiver"><i class="bi bi-unlock"></i></button>
                           <?php endif; ?>
                         </form>
+                        <form method="post" action="utilisateur-role.php" class="d-inline">
+                          <?= champJeton() ?>
+                          <input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
+                          <input type="hidden" name="role" value="<?= $u['role'] === 'admin' ? 'utilisateur' : 'admin' ?>">
+                          <button type="submit" class="btn btn-sm btn-outline-dark" title="<?= $u['role'] === 'admin' ? 'Retirer le rôle admin' : 'Rendre admin' ?>"><i class="bi bi-shield<?= $u['role'] === 'admin' ? '-slash' : '-check' ?>"></i></button>
+                        </form>
                         <form method="post" action="utilisateur-supprimer.php" class="d-inline" onsubmit="return confirm('Supprimer cet utilisateur et son profil ?');">
-                          <?= champCsrf() ?>
+                          <?= champJeton() ?>
                           <input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
                           <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
                         </form>

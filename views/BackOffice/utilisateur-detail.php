@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 require_once __DIR__ . '/../../controllers/ProfilAccessibiliteController.php';
 require_once __DIR__ . '/../../controllers/DonController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $utilisateurController = new UtilisateurController();
 $profilController = new ProfilAccessibiliteController();
@@ -54,7 +54,7 @@ include __DIR__ . '/includes/header.php';
                 <a href="utilisateur-modifier.php?id=<?= $id ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i> Modifier</a>
                 <?php if (!$moiMeme): ?>
                   <form method="post" action="utilisateur-statut.php">
-                    <?= champCsrf() ?>
+                    <?= champJeton() ?>
                     <input type="hidden" name="id" value="<?= $id ?>">
                     <?php if ($utilisateur['statut'] === 'actif'): ?>
                       <input type="hidden" name="statut" value="bloque">
@@ -64,8 +64,14 @@ include __DIR__ . '/includes/header.php';
                       <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-unlock"></i> Réactiver</button>
                     <?php endif; ?>
                   </form>
+                  <form method="post" action="utilisateur-role.php">
+                    <?= champJeton() ?>
+                    <input type="hidden" name="id" value="<?= $id ?>">
+                    <input type="hidden" name="role" value="<?= $utilisateur['role'] === 'admin' ? 'utilisateur' : 'admin' ?>">
+                    <button type="submit" class="btn btn-sm btn-dark"><i class="bi bi-shield"></i> <?= $utilisateur['role'] === 'admin' ? 'Retirer le rôle admin' : 'Rendre admin' ?></button>
+                  </form>
                   <form method="post" action="utilisateur-supprimer.php" onsubmit="return confirm('Supprimer cet utilisateur et son profil ?');">
-                    <?= champCsrf() ?>
+                    <?= champJeton() ?>
                     <input type="hidden" name="id" value="<?= $id ?>">
                     <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Supprimer</button>
                   </form>

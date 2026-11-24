@@ -14,9 +14,9 @@ $erreurs = [];
 $valeurs = ['taille_texte' => 'normal'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifierPost();
+    verifierFormulaire();
     $valeurs = $_POST;
-    $erreurs = array_merge($utilisateurController->valider($_POST), $profilController->valider($_POST));
+    $erreurs = array_merge($utilisateurController->validerUtilisateur($_POST), $profilController->valider($_POST));
 
     if (empty($erreurs)) {
         $utilisateur = new Utilisateur(
@@ -32,10 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = $utilisateurController->Create($utilisateur);
         if ($id) {
             $profilController->Create($profilController->depuisFormulaire($_POST, $id));
-            $_SESSION['message'] = 'Votre compte a été créé. Vous pouvez maintenant vous connecter.';
+            $_SESSION['message'] = 'Compte créé avec succès. Vous pouvez maintenant vous connecter.';
             header('Location: connexion.php');
             exit;
         }
+        $erreurs['general'] = 'L\'inscription a échoué. Veuillez réessayer.';
+    } else {
+        $erreurs['general'] = 'Veuillez corriger les erreurs indiquées en rouge.';
     }
 }
 
@@ -50,7 +53,10 @@ include __DIR__ . '/includes/header.php';
         <div class="row justify-content-center">
           <div class="col-lg-8">
             <form method="post" action="inscription.php" class="formulaire-vivora" novalidate>
-              <?= champCsrf() ?>
+              <?= champJeton() ?>
+              <?php if (isset($erreurs['general'])): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($erreurs['general']) ?></div>
+              <?php endif; ?>
 
               <h3 class="mb-3">Mes informations</h3>
               <div class="row">

@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/PartenaireController.php';
 require_once __DIR__ . '/../../controllers/DonController.php';
 
-requireAuth();
+exigerConnexion();
 
 $partenaireController = new PartenaireController();
 $donController = new DonController();
@@ -55,7 +55,7 @@ if (isset($_GET['confirmation'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifierPost();
+    verifierFormulaire();
     $valeurs = array_merge($valeurs, $_POST);
     if (!isset($_POST['jours']) || !is_array($_POST['jours'])) {
         $valeurs['jours'] = [];
@@ -164,7 +164,7 @@ include __DIR__ . '/includes/header.php';
           <?php else: ?>
 
             <form method="post" action="faire-don.php" class="formulaire-vivora" novalidate>
-              <?= champCsrf() ?>
+              <?= champJeton() ?>
 
               <fieldset class="mb-4">
                 <legend class="h5">Étape 1 : quel type de don ?</legend>

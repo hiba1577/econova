@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/PartenaireController.php';
 require_once __DIR__ . '/../../controllers/DonController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $partenaireController = new PartenaireController();
 $donController = new DonController();
@@ -142,7 +142,7 @@ include __DIR__ . '/includes/header.php';
                       <a href="don-detail.php?id=<?= (int) $d['id'] ?>" class="btn btn-sm btn-outline-secondary" title="Détail"><i class="bi bi-eye"></i></a>
                       <?php if ($d['statut'] === 'en_attente' || $d['statut'] === 'refuse'): ?>
                         <form method="post" action="don-statut.php" class="d-inline">
-                          <?= champCsrf() ?>
+                          <?= champJeton() ?>
                           <input type="hidden" name="id" value="<?= (int) $d['id'] ?>">
                           <input type="hidden" name="statut" value="valide">
                           <button type="submit" class="btn btn-sm btn-outline-success" title="Valider"><i class="bi bi-check-lg"></i></button>
@@ -150,7 +150,7 @@ include __DIR__ . '/includes/header.php';
                       <?php endif; ?>
                       <?php if ($d['statut'] === 'en_attente' || $d['statut'] === 'valide'): ?>
                         <form method="post" action="don-statut.php" class="d-inline">
-                          <?= champCsrf() ?>
+                          <?= champJeton() ?>
                           <input type="hidden" name="id" value="<?= (int) $d['id'] ?>">
                           <input type="hidden" name="statut" value="refuse">
                           <button type="submit" class="btn btn-sm btn-outline-warning" title="Refuser"><i class="bi bi-x-lg"></i></button>
@@ -158,14 +158,14 @@ include __DIR__ . '/includes/header.php';
                       <?php endif; ?>
                       <?php if ($d['type_don'] === 'physique' && $d['statut'] !== 'recu' && $d['statut'] !== 'refuse'): ?>
                         <form method="post" action="don-statut.php" class="d-inline">
-                          <?= champCsrf() ?>
+                          <?= champJeton() ?>
                           <input type="hidden" name="id" value="<?= (int) $d['id'] ?>">
                           <input type="hidden" name="statut" value="recu">
                           <button type="submit" class="btn btn-sm btn-outline-info" title="Marquer comme reçu"><i class="bi bi-box-arrow-in-down"></i></button>
                         </form>
                       <?php endif; ?>
                       <form method="post" action="don-supprimer.php" class="d-inline" onsubmit="return confirm('Supprimer ce don ?');">
-                        <?= champCsrf() ?>
+                        <?= champJeton() ?>
                         <input type="hidden" name="id" value="<?= (int) $d['id'] ?>">
                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
                       </form>

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/PartenaireController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $partenaireController = new PartenaireController();
 $partenaires = $partenaireController->readPartenaire();
@@ -56,7 +56,7 @@ include __DIR__ . '/includes/header.php';
                       <a href="partenaire-detail.php?id=<?= (int) $p['id'] ?>" class="btn btn-sm btn-outline-secondary" title="Détail"><i class="bi bi-eye"></i></a>
                       <a href="partenaire-modifier.php?id=<?= (int) $p['id'] ?>" class="btn btn-sm btn-outline-primary" title="Modifier"><i class="bi bi-pencil"></i></a>
                       <form method="post" action="partenaire-supprimer.php" class="d-inline" onsubmit="return confirm('Supprimer ce partenaire ? Ses publicités et ses dons seront aussi supprimés.');">
-                        <?= champCsrf() ?>
+                        <?= champJeton() ?>
                         <input type="hidden" name="id" value="<?= (int) $p['id'] ?>">
                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
                       </form>

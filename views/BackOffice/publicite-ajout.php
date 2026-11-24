@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/PartenaireController.php';
 require_once __DIR__ . '/../../controllers/PubliciteController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $partenaireController = new PartenaireController();
 $publiciteController = new PubliciteController();
@@ -19,7 +19,7 @@ $valeurs = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifierPost();
+    verifierFormulaire();
     $valeurs = $_POST;
     $erreurs = $publiciteController->valider($_POST, $idsValides);
 
@@ -56,7 +56,7 @@ include __DIR__ . '/includes/header.php';
         <div class="card card-vivora mb-4">
           <div class="card-header"><h3 class="card-title">Nouvelle publicité</h3></div>
           <form method="post" action="publicite-ajout.php" enctype="multipart/form-data" novalidate>
-            <?= champCsrf() ?>
+            <?= champJeton() ?>
             <div class="card-body">
               <div class="row">
                 <div class="col-md-6 mb-3">

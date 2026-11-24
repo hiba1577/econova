@@ -2,16 +2,19 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 
-requireRole('admin');
-verifierPost();
+exigerAdmin();
+verifierFormulaire();
 
 $id = (int) ($_POST['id'] ?? 0);
 $utilisateurController = new UtilisateurController();
+$utilisateur = $utilisateurController->getUtilisateurById($id);
 
 if ($id === (int) $_SESSION['user']['id']) {
     $_SESSION['erreur'] = 'Vous ne pouvez pas supprimer votre propre compte.';
-} elseif (!$utilisateurController->getUtilisateurById($id)) {
+} elseif (!$utilisateur) {
     $_SESSION['erreur'] = 'Utilisateur introuvable.';
+} elseif ($utilisateurController->estDernierAdmin($utilisateur)) {
+    $_SESSION['erreur'] = 'Il doit toujours rester au moins un administrateur.';
 } else {
     $utilisateurController->Delete($id);
     $_SESSION['message'] = 'L\'utilisateur et son profil d\'accessibilité ont été supprimés.';

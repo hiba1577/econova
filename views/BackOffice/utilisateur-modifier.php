@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 require_once __DIR__ . '/../../controllers/ProfilAccessibiliteController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $utilisateurController = new UtilisateurController();
 $profilController = new ProfilAccessibiliteController();
@@ -23,7 +23,7 @@ $valeurs['id'] = $utilisateur['id'];
 $erreurs = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifierPost();
+    verifierFormulaire();
     $donnees = $_POST;
     if ($moiMeme) {
         $donnees['role'] = 'admin';
@@ -32,9 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $valeurs = array_merge($valeurs, $donnees);
     $changerMdp = ($donnees['mot_de_passe'] ?? '') !== '';
     $erreurs = array_merge(
-        $utilisateurController->valider($donnees, $id, $changerMdp),
+        $utilisateurController->validerUtilisateur($donnees, $id, $changerMdp),
         $profilController->valider($donnees)
     );
+    $retireAdmin = ($donnees['role'] ?? '') !== 'admin' || ($donnees['statut'] ?? '') !== 'actif';
+    if ($retireAdmin && $utilisateurController->estDernierAdmin($utilisateur)) {
+        $erreurs['role'] = 'Il doit toujours rester au moins un administrateur.';
+    }
 
     if (empty($erreurs)) {
         $modifie = new Utilisateur(
@@ -42,15 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             trim($donnees['nom']),
             trim($donnees['prenom']),
             trim($donnees['email']),
-            $utilisateur['mot_de_passe'],
+            $changerMdp ? password_hash($donnees['mot_de_passe'], PASSWORD_DEFAULT) : '',
             trim($donnees['telephone']),
             $donnees['role'],
             $donnees['statut']
         );
         $utilisateurController->Update($modifie, $id);
-        if ($changerMdp) {
-            $utilisateurController->changerMotDePasse($id, $donnees['mot_de_passe']);
-        }
         $profilController->enregistrer($profilController->depuisFormulaire($donnees, $id));
         if ($moiMeme) {
             $_SESSION['user']['nom'] = $modifie->getNom();
@@ -70,7 +71,7 @@ include __DIR__ . '/includes/header.php';
 ?>
 
         <form method="post" action="utilisateur-modifier.php?id=<?= $id ?>" novalidate>
-          <?= champCsrf() ?>
+          <?= champJeton() ?>
           <div class="row">
             <div class="col-lg-7">
               <div class="card card-vivora mb-4">

@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/PartenaireController.php';
 require_once __DIR__ . '/../../controllers/PubliciteController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $partenaireController = new PartenaireController();
 $publiciteController = new PubliciteController();
@@ -96,7 +96,7 @@ include __DIR__ . '/includes/header.php';
                     <td><span class="badge <?= $pub['statut'] === 'active' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= htmlspecialchars(ucfirst($pub['statut'])) ?></span></td>
                     <td class="text-end text-nowrap">
                       <form method="post" action="publicite-statut.php" class="d-inline">
-                        <?= champCsrf() ?>
+                        <?= champJeton() ?>
                         <input type="hidden" name="id" value="<?= (int) $pub['id'] ?>">
                         <?php if ($pub['statut'] === 'active'): ?>
                           <input type="hidden" name="statut" value="inactive">
@@ -108,7 +108,7 @@ include __DIR__ . '/includes/header.php';
                       </form>
                       <a href="publicite-modifier.php?id=<?= (int) $pub['id'] ?>" class="btn btn-sm btn-outline-primary" title="Modifier"><i class="bi bi-pencil"></i></a>
                       <form method="post" action="publicite-supprimer.php" class="d-inline" onsubmit="return confirm('Supprimer cette publicité ?');">
-                        <?= champCsrf() ?>
+                        <?= champJeton() ?>
                         <input type="hidden" name="id" value="<?= (int) $pub['id'] ?>">
                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
                       </form>

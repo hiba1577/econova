@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/DonController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $donController = new DonController();
 $id = (int) ($_GET['id'] ?? 0);
@@ -117,7 +117,7 @@ include __DIR__ . '/includes/header.php';
                 <?php foreach ($actions as $nouveau => $a): ?>
                   <?php if ($don['statut'] !== $nouveau): ?>
                     <form method="post" action="don-statut.php">
-                      <?= champCsrf() ?>
+                      <?= champJeton() ?>
                       <input type="hidden" name="id" value="<?= $id ?>">
                       <input type="hidden" name="statut" value="<?= $nouveau ?>">
                       <input type="hidden" name="retour" value="detail">

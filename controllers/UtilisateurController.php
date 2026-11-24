@@ -42,6 +42,7 @@ class UtilisateurController
         }
     }
 
+    // Le mot de passe arrive déjà haché par la vue
     public function Create(Utilisateur $utilisateur)
     {
         $sql = 'INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, telephone, role, statut)
@@ -68,19 +69,27 @@ class UtilisateurController
     public function Update(Utilisateur $utilisateur, $id)
     {
         $sql = 'UPDATE utilisateur SET nom = :nom, prenom = :prenom, email = :email,
-                telephone = :telephone, role = :role, statut = :statut WHERE id = :id';
+                telephone = :telephone, role = :role, statut = :statut';
+        $params = [
+            'id' => $id,
+            'nom' => $utilisateur->getNom(),
+            'prenom' => $utilisateur->getPrenom(),
+            'email' => $utilisateur->getEmail(),
+            'telephone' => $utilisateur->getTelephone(),
+            'role' => $utilisateur->getRole(),
+            'statut' => $utilisateur->getStatut()
+        ];
+        // Changer le mot de passe seulement s'il est rempli (déjà haché)
+        if ($utilisateur->getMotDePasse() != '') {
+            $sql .= ', mot_de_passe = :mot_de_passe';
+            $params['mot_de_passe'] = $utilisateur->getMotDePasse();
+        }
+        $sql .= ' WHERE id = :id';
+
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
-            $query->execute([
-                'id' => $id,
-                'nom' => $utilisateur->getNom(),
-                'prenom' => $utilisateur->getPrenom(),
-                'email' => $utilisateur->getEmail(),
-                'telephone' => $utilisateur->getTelephone(),
-                'role' => $utilisateur->getRole(),
-                'statut' => $utilisateur->getStatut()
-            ]);
+            $query->execute($params);
             return true;
         } catch (Exception $e) {
             echo 'Error ' . $e->getMessage();
@@ -128,6 +137,37 @@ class UtilisateurController
             echo 'Error ' . $e->getMessage();
             return false;
         }
+    }
+
+    public function changerRole($id, $role)
+    {
+        $db = config::getConnexion();
+        try {
+            $query = $db->prepare('UPDATE utilisateur SET role = :role WHERE id = :id');
+            $query->execute(['id' => $id, 'role' => $role]);
+            return true;
+        } catch (Exception $e) {
+            echo 'Error ' . $e->getMessage();
+            return false;
+        }
+    }
+
+    // Nombre d'admins actifs : il doit toujours en rester au moins un
+    public function compterAdmins()
+    {
+        $db = config::getConnexion();
+        try {
+            return $db->query("SELECT COUNT(*) FROM utilisateur WHERE role = 'admin' AND statut = 'actif'")->fetchColumn();
+        } catch (Exception $e) {
+            echo 'Error ' . $e->getMessage();
+            return 0;
+        }
+    }
+
+    // Vrai si on retire le dernier admin actif (suppression, blocage ou changement de rôle)
+    public function estDernierAdmin($utilisateur)
+    {
+        return $utilisateur['role'] === 'admin' && $utilisateur['statut'] === 'actif' && $this->compterAdmins() <= 1;
     }
 
     public function verifierConnexion($email, $motDePasse)
@@ -267,7 +307,7 @@ class UtilisateurController
         return $erreurs;
     }
 
-    public function valider($donnees, $idExclu = null, $avecMotDePasse = true)
+    public function validerUtilisateur($donnees, $idExclu = null, $avecMotDePasse = true)
     {
         $erreurs = [];
         $nom = trim($donnees['nom'] ?? '');

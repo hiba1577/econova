@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/DonController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $donController = new DonController();
 $lignes = $donController->donsParPartenaire();

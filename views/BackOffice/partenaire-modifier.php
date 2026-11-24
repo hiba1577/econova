@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/PartenaireController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $partenaireController = new PartenaireController();
 $id = (int) ($_GET['id'] ?? 0);
@@ -18,7 +18,7 @@ $valeurs = $partenaire;
 $types = ['association' => 'Association', 'clinique' => 'Clinique', 'pharmacie' => 'Pharmacie', 'sponsor' => 'Sponsor'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifierPost();
+    verifierFormulaire();
     $valeurs = array_merge($partenaire, $_POST);
     $erreurs = $partenaireController->valider($_POST);
 
@@ -63,7 +63,7 @@ include __DIR__ . '/includes/header.php';
         <div class="card card-vivora mb-4">
           <div class="card-header"><h3 class="card-title"><?= htmlspecialchars($partenaire['nom']) ?></h3></div>
           <form method="post" action="partenaire-modifier.php?id=<?= $id ?>" enctype="multipart/form-data" novalidate>
-            <?= champCsrf() ?>
+            <?= champJeton() ?>
             <div class="card-body">
               <div class="row">
                 <div class="col-md-6 mb-3">

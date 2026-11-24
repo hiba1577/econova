@@ -44,7 +44,7 @@ $groupeDons = in_array($menu, ['dons', 'dons-physiques', 'dons-partenaire'], tru
             </li>
             <li class="user-footer">
               <a href="../FrontOffice/mon-profil.php" class="btn btn-default btn-flat">Mon profil</a>
-              <a href="../FrontOffice/deconnexion.php?jeton=<?= htmlspecialchars(getCsrfToken()) ?>" class="btn btn-default btn-flat float-end">Déconnexion</a>
+              <a href="../FrontOffice/deconnexion.php?jeton=<?= creerJeton() ?>" class="btn btn-default btn-flat float-end">Déconnexion</a>
             </li>
           </ul>
         </li>

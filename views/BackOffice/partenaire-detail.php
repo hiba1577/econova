@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../controllers/PartenaireController.php';
 require_once __DIR__ . '/../../controllers/PubliciteController.php';
 require_once __DIR__ . '/../../controllers/DonController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $partenaireController = new PartenaireController();
 $publiciteController = new PubliciteController();
@@ -60,7 +60,7 @@ include __DIR__ . '/includes/header.php';
               <div class="card-footer d-flex gap-2">
                 <a href="partenaire-modifier.php?id=<?= $id ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i> Modifier</a>
                 <form method="post" action="partenaire-supprimer.php" onsubmit="return confirm('Supprimer ce partenaire ? Ses publicités et ses dons seront aussi supprimés.');">
-                  <?= champCsrf() ?>
+                  <?= champJeton() ?>
                   <input type="hidden" name="id" value="<?= $id ?>">
                   <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Supprimer</button>
                 </form>

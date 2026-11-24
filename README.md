@@ -38,7 +38,7 @@ grâce à des classes posées sur la balise `<html>` :
 | Groupe | Pages |
 |--------|-------|
 | Tableau de bord | `dashboard.php` : utilisateurs, comptes bloqués, partenaires, publicités actives, total des dons validés, dons en attente, derniers dons |
-| Utilisateurs | `utilisateurs-liste.php` (jointure avec le profil, recherche, filtre par rôle et statut, tri), `utilisateur-ajout.php`, `utilisateur-modifier.php`, `utilisateur-detail.php`, `utilisateur-supprimer.php`, `utilisateur-statut.php` (bloquer / réactiver), `utilisateurs-par-besoin.php` (INNER JOIN) |
+| Utilisateurs | `utilisateurs-liste.php` (jointure avec le profil, recherche, filtre par rôle et statut, tri), `utilisateur-ajout.php`, `utilisateur-modifier.php`, `utilisateur-detail.php`, `utilisateur-supprimer.php`, `utilisateur-statut.php` (bloquer / réactiver), `utilisateur-role.php` (rendre admin / retirer le rôle), `utilisateurs-par-besoin.php` (INNER JOIN) |
 | Partenariats | `partenaires-liste.php`, `partenaire-ajout.php`, `partenaire-modifier.php`, `partenaire-detail.php` (avec ses publicités et ses dons), `partenaire-supprimer.php`, `publicites-liste.php`, `publicite-ajout.php`, `publicite-modifier.php`, `publicite-supprimer.php`, `publicite-statut.php` (activer / désactiver) |
 | Dons | `dons-liste.php` (filtre par type, catégorie, statut et partenaire), `don-detail.php`, `don-statut.php` (valider, refuser, marquer comme reçu), `don-supprimer.php`, `dons-par-partenaire.php` (total par partenaire) |
 
@@ -107,19 +107,23 @@ Les données de test contiennent 2 dons de sang, 2 équipements, 1 lot de médic
   - `session.use_strict_mode`, `session.cookie_httponly` et `session.cookie_samesite=Lax` avant `session_start()` ;
   - expiration après 30 minutes d'inactivité ;
   - `session_regenerate_id(true)` à la connexion et au changement de mot de passe ;
-  - en-têtes `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff` et `Referrer-Policy` ;
-  - fonctions `requireAuth()`, `requireRole($role)`, `getCsrfToken()`, `champCsrf()`, `verifyCsrfToken($token)` (avec `hash_equals`) et `fermerSession()`.
-- `requireRole('admin')` en haut de chaque page du Back office : un utilisateur simple reçoit une erreur 403.
-- Un jeton CSRF dans tous les formulaires POST. Les suppressions et les changements de statut se font uniquement en POST.
+  - en-têtes `X-Frame-Options: DENY` et `X-Content-Type-Options: nosniff` ;
+  - fonctions `estConnecte()`, `estAdmin()`, `exigerConnexion()`, `exigerAdmin()`, `creerJeton()`, `verifierJeton($jeton)` (avec `hash_equals`), `champJeton()`, `verifierFormulaire()` et `fermerSession()`.
+- `exigerAdmin()` en haut de chaque page du Back office : un utilisateur simple reçoit une erreur 403.
+- `exigerConnexion()` relit le compte en base à chaque page : un compte bloqué ou supprimé pendant sa session est déconnecté, et un changement de rôle s'applique tout de suite.
+- Un jeton CSRF dans tous les formulaires POST. Suppressions, changements de statut et de rôle se font uniquement en POST.
 - Mots de passe hachés avec `password_hash` et vérifiés avec `password_verify`.
 - Requêtes préparées PDO partout (`EMULATE_PREPARES` à false). Le tri passe par une liste blanche.
 - `htmlspecialchars` à chaque affichage.
 - Un utilisateur ne voit que ses propres dons : l'identifiant vient toujours de la session.
 - Un admin ne peut pas se supprimer, se bloquer ni changer son propre rôle.
+- Il reste toujours au moins un admin actif (`UtilisateurController::estDernierAdmin()`).
 
 ## Validation des saisies
 
-- PHP : une méthode `valider()` dans chaque contrôleur. Les messages s'affichent sous chaque champ et les valeurs saisies sont gardées.
+- PHP : `UtilisateurController::validerUtilisateur()` pour les comptes, et une méthode `valider()` dans les autres contrôleurs.
+  Les messages s'affichent en rouge sous chaque champ, un message général s'affiche en haut du formulaire,
+  et les valeurs saisies sont gardées (sauf les mots de passe).
 - JavaScript : `assets/js/validation.js` (Front et Back) vérifie les mêmes règles avant l'envoi. Les formulaires ont l'attribut `novalidate`.
 
 | Champ | Règle |
@@ -192,5 +196,29 @@ vivora/
 │       └── dashboard.php, utilisateurs-liste.php, ...
 ├── uploads/                    images des publicités et logos
 ├── database/vivora_db.sql      base de données et données de test
-└── docs/                       diagrammes PlantUML
+└── docs/                       diagrammes PlantUML, explication-code.md (module utilisateur)
 ```
+
+## Usage de l'IA
+
+### Module utilisateur (branche `module-utilisateur`)
+
+Le module utilisateur a été réalisé avec l'aide de **Claude** (Claude Code, modèle Claude Opus 5.5, Anthropic).
+
+- **Claude** a écrit le code : la base, `config.php`, `session.php`, le modèle, le contrôleur (CRUD, connexion,
+  validation, recherche, rôles, règle du dernier admin), les vues Front et Back office et `validation.js`.
+  Au départ, Hiba devait écrire elle-même le CRUD, la connexion, la validation et la liste, avec Claude comme guide.
+  Faute de temps avant la validation, elle a demandé à Claude d'écrire aussi ces parties.
+  Claude a écrit et lancé les tests (49 vérifications sur http://localhost/vivora/), corrigé les bugs trouvés,
+  fusionné `module-utilisateur` dans cette branche en résolvant les conflits, et rédigé la documentation
+  (`docs/explication-code.md`).
+- **Hiba** a défini le besoin (fonctionnalités, rôles, règles métier, style MVC de l'atelier « Club Sportif », règles Git),
+  testé chaque fonctionnalité dans le navigateur et dans phpMyAdmin (c'est elle qui a trouvé le bug de l'inscription
+  sans message), et relu le code fichier par fichier avec `docs/explication-code.md`.
+- **Ce qu'elle a appris** : le schéma MVC ; pourquoi utiliser des requêtes préparées, `htmlspecialchars`, un jeton CSRF,
+  `password_hash` et `session_regenerate_id` ; pourquoi valider en JavaScript et en PHP ;
+  et qu'un code généré doit toujours être testé et relu.
+
+### Accessibilité, partenariats et dons
+
+*À compléter par Hiba : préciser quelles parties ont été écrites avec l'aide de l'IA et lesquelles ont été écrites à la main.*

@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../controllers/PartenaireController.php';
 require_once __DIR__ . '/../../controllers/PubliciteController.php';
 require_once __DIR__ . '/../../controllers/DonController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $utilisateurController = new UtilisateurController();
 $partenaireController = new PartenaireController();

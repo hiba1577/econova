@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 require_once __DIR__ . '/../../controllers/ProfilAccessibiliteController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $utilisateurController = new UtilisateurController();
 $profilController = new ProfilAccessibiliteController();
@@ -11,9 +11,9 @@ $erreurs = [];
 $valeurs = ['role' => 'utilisateur', 'statut' => 'actif', 'taille_texte' => 'normal'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifierPost();
+    verifierFormulaire();
     $valeurs = $_POST;
-    $erreurs = array_merge($utilisateurController->valider($_POST), $profilController->valider($_POST));
+    $erreurs = array_merge($utilisateurController->validerUtilisateur($_POST), $profilController->valider($_POST));
 
     if (empty($erreurs)) {
         $utilisateur = new Utilisateur(
@@ -42,7 +42,7 @@ include __DIR__ . '/includes/header.php';
 ?>
 
         <form method="post" action="utilisateur-ajout.php" novalidate>
-          <?= champCsrf() ?>
+          <?= champJeton() ?>
           <div class="row">
             <div class="col-lg-7">
               <div class="card card-vivora mb-4">

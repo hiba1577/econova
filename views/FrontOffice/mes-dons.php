@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/DonController.php';
 
-requireAuth();
+exigerConnexion();
 
 $donController = new DonController();
 $dons = $donController->readDonsByUtilisateur($_SESSION['user']['id']);
