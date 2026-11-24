@@ -238,7 +238,7 @@ class UtilisateurController
         return $erreurs;
     }
 
-    public function valider($donnees, $idExclu = null, $avecMotDePasse = true)
+    public function validerUtilisateur($donnees, $idExclu = null, $avecMotDePasse = true)
     {
         $erreurs = [];
         $nom = trim($donnees['nom'] ?? '');

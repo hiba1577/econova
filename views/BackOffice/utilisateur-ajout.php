@@ -11,7 +11,7 @@ $valeurs = ['role' => 'utilisateur', 'statut' => 'actif'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verifierFormulaire();
     $valeurs = $_POST;
-    $erreurs = $utilisateurController->valider($_POST);
+    $erreurs = $utilisateurController->validerUtilisateur($_POST);
 
     if (empty($erreurs)) {
         $utilisateur = new Utilisateur(

@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $valeurs = array_merge($valeurs, $donnees);
     $changerMdp = ($donnees['mot_de_passe'] ?? '') !== '';
-    $erreurs = $utilisateurController->valider($donnees, $id, $changerMdp);
+    $erreurs = $utilisateurController->validerUtilisateur($donnees, $id, $changerMdp);
 
     if (empty($erreurs)) {
         $modifie = new Utilisateur(

@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'infos') {
         $valeurs = array_merge($utilisateur, $_POST);
-        $erreursInfos = $utilisateurController->valider($_POST, $id, false);
+        $erreursInfos = $utilisateurController->validerUtilisateur($_POST, $id, false);
         if (empty($erreursInfos)) {
             $modifie = new Utilisateur(
                 $id,
