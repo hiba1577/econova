@@ -35,7 +35,7 @@ function estAdmin()
 function exigerConnexion()
 {
     if (!estConnecte()) {
-        $_SESSION['erreur'] = 'Veuillez vous connecter pour accéder à cette page.';
+        $_SESSION['erreur'] = $_SESSION['erreur'] ?? 'Veuillez vous connecter pour accéder à cette page.';
         header('Location: ../FrontOffice/connexion.php');
         exit;
     }
