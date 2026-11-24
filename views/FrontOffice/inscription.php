@@ -29,10 +29,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
         $id = $utilisateurController->Create($utilisateur);
         if ($id) {
-            $_SESSION['message'] = 'Votre compte a été créé. Vous pouvez maintenant vous connecter.';
+            $_SESSION['message'] = 'Compte créé avec succès. Vous pouvez maintenant vous connecter.';
             header('Location: connexion.php');
             exit;
         }
+        $erreurs['general'] = 'L\'inscription a échoué. Veuillez réessayer.';
+    } else {
+        $erreurs['general'] = 'Veuillez corriger les erreurs indiquées en rouge.';
     }
 }
 
@@ -48,6 +51,9 @@ include __DIR__ . '/includes/header.php';
           <div class="col-lg-8">
             <form method="post" action="inscription.php" class="formulaire-vivora" novalidate>
               <?= champJeton() ?>
+              <?php if (isset($erreurs['general'])): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($erreurs['general']) ?></div>
+              <?php endif; ?>
 
               <h3 class="mb-3">Mes informations</h3>
               <div class="row">
