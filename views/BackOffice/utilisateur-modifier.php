@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $utilisateurController = new UtilisateurController();
 
@@ -19,7 +19,7 @@ $valeurs = $utilisateur;
 $erreurs = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifierPost();
+    verifierFormulaire();
     $donnees = $_POST;
     if ($moiMeme) {
         $donnees['role'] = 'admin';
@@ -61,7 +61,7 @@ include __DIR__ . '/includes/header.php';
 ?>
 
         <form method="post" action="utilisateur-modifier.php?id=<?= $id ?>" novalidate>
-          <?= champCsrf() ?>
+          <?= champJeton() ?>
           <div class="row">
             <div class="col-lg-9">
               <div class="card card-vivora mb-4">

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $recherche = trim($_GET['recherche'] ?? '');
 $role = $_GET['role'] ?? '';
@@ -105,7 +105,7 @@ include __DIR__ . '/includes/header.php';
                       <a href="utilisateur-modifier.php?id=<?= (int) $u['id'] ?>" class="btn btn-sm btn-outline-primary" title="Modifier"><i class="bi bi-pencil"></i></a>
                       <?php if ((int) $u['id'] !== (int) $_SESSION['user']['id']): ?>
                         <form method="post" action="utilisateur-statut.php" class="d-inline">
-                          <?= champCsrf() ?>
+                          <?= champJeton() ?>
                           <input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
                           <?php if ($u['statut'] === 'actif'): ?>
                             <input type="hidden" name="statut" value="bloque">
@@ -116,7 +116,7 @@ include __DIR__ . '/includes/header.php';
                           <?php endif; ?>
                         </form>
                         <form method="post" action="utilisateur-supprimer.php" class="d-inline" onsubmit="return confirm('Supprimer cet utilisateur ?');">
-                          <?= champCsrf() ?>
+                          <?= champJeton() ?>
                           <input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
                           <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
                         </form>

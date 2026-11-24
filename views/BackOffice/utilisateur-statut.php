@@ -2,8 +2,8 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 
-requireRole('admin');
-verifierPost();
+exigerAdmin();
+verifierFormulaire();
 
 $id = (int) ($_POST['id'] ?? 0);
 $statut = $_POST['statut'] ?? '';

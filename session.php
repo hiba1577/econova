@@ -1,43 +1,37 @@
 <?php
 
+// Démarrer une session sécurisée (cookie inaccessible au JavaScript)
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.use_strict_mode', 1);
+    ini_set('session.use_only_cookies', 1);
     ini_set('session.cookie_httponly', 1);
     ini_set('session.cookie_samesite', 'Lax');
-    ini_set('session.use_only_cookies', 1);
     session_start();
 }
 
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
-header('Referrer-Policy: strict-origin-when-cross-origin');
 
+// Expiration après 30 minutes d'inactivité
 if (isset($_SESSION['derniere_activite']) && time() - $_SESSION['derniere_activite'] > 1800) {
     fermerSession();
     session_start();
-    $_SESSION['erreur'] = 'Votre session a expiré après 30 minutes d\'inactivité. Veuillez vous reconnecter.';
+    $_SESSION['erreur'] = 'Votre session a expiré après 30 minutes. Veuillez vous reconnecter.';
 }
 $_SESSION['derniere_activite'] = time();
-
-function connecterUtilisateur($utilisateur)
-{
-    session_regenerate_id(true);
-    $_SESSION['user'] = [
-        'id' => $utilisateur['id'],
-        'nom' => $utilisateur['nom'],
-        'prenom' => $utilisateur['prenom'],
-        'email' => $utilisateur['email'],
-        'role' => $utilisateur['role']
-    ];
-    unset($_SESSION['csrf_token']);
-}
 
 function estConnecte()
 {
     return isset($_SESSION['user']);
 }
 
-function requireAuth()
+function estAdmin()
+{
+    return estConnecte() && $_SESSION['user']['role'] === 'admin';
+}
+
+// Rediriger vers la connexion si l'utilisateur n'est pas connecté
+function exigerConnexion()
 {
     if (!estConnecte()) {
         $_SESSION['erreur'] = 'Veuillez vous connecter pour accéder à cette page.';
@@ -46,48 +40,48 @@ function requireAuth()
     }
 }
 
-function requireRole($role)
+// Vérifier que l'utilisateur est admin, sinon erreur 403
+function exigerAdmin()
 {
-    requireAuth();
-    if ($_SESSION['user']['role'] !== $role) {
+    exigerConnexion();
+    if (!estAdmin()) {
         http_response_code(403);
         include __DIR__ . '/views/erreur-403.php';
         exit;
     }
 }
 
-function getCsrfToken()
+// Jeton CSRF : créé une fois par session
+function creerJeton()
 {
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    if (empty($_SESSION['jeton'])) {
+        $_SESSION['jeton'] = bin2hex(random_bytes(32));
     }
-    return $_SESSION['csrf_token'];
+    return $_SESSION['jeton'];
 }
 
-function champCsrf()
+function verifierJeton($jeton)
 {
-    return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(getCsrfToken()) . '">';
+    return isset($_SESSION['jeton']) && is_string($jeton) && hash_equals($_SESSION['jeton'], $jeton);
 }
 
-function verifyCsrfToken($token)
+function champJeton()
 {
-    return isset($_SESSION['csrf_token']) && is_string($token) && hash_equals($_SESSION['csrf_token'], $token);
+    return '<input type="hidden" name="jeton" value="' . creerJeton() . '">';
 }
 
-function verifierPost()
+// Refuser un formulaire qui n'est pas en POST ou sans jeton valide
+function verifierFormulaire()
 {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !verifierJeton($_POST['jeton'] ?? '')) {
         http_response_code(403);
-        exit('Requête refusée : jeton CSRF invalide ou absent.');
+        exit('Requête refusée : jeton CSRF invalide.');
     }
 }
 
 function fermerSession()
 {
     $_SESSION = [];
-    if (ini_get('session.use_cookies')) {
-        $p = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
-    }
+    setcookie(session_name(), '', time() - 3600, '/');
     session_destroy();
 }

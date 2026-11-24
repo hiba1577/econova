@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 
-requireAuth();
+exigerConnexion();
 
 $utilisateurController = new UtilisateurController();
 $id = $_SESSION['user']['id'];
@@ -20,7 +20,7 @@ $erreursMdp = [];
 $erreursSuppression = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifierPost();
+    verifierFormulaire();
     $action = $_POST['action'] ?? '';
 
     if ($action === 'infos') {
@@ -90,7 +90,7 @@ include __DIR__ . '/includes/header.php';
 
           <div class="col-lg-6">
             <form method="post" action="mon-profil.php" class="formulaire-vivora h-100" novalidate>
-              <?= champCsrf() ?>
+              <?= champJeton() ?>
               <input type="hidden" name="action" value="infos">
               <h3 class="mb-3"><i class="bi bi-person"></i> Mes informations</h3>
               <div class="row">
@@ -122,7 +122,7 @@ include __DIR__ . '/includes/header.php';
 
           <div class="col-lg-6">
             <form method="post" action="mon-profil.php" class="formulaire-vivora h-100" novalidate>
-              <?= champCsrf() ?>
+              <?= champJeton() ?>
               <input type="hidden" name="action" value="motdepasse">
               <h3 class="mb-3"><i class="bi bi-key"></i> Changer mon mot de passe</h3>
               <div class="mb-3">
@@ -147,7 +147,7 @@ include __DIR__ . '/includes/header.php';
 
           <div class="col-lg-6">
             <form method="post" action="mon-profil.php" class="formulaire-vivora zone-danger h-100" novalidate onsubmit="return confirm('Voulez-vous vraiment supprimer votre compte ? Cette action est définitive.');">
-              <?= champCsrf() ?>
+              <?= champJeton() ?>
               <input type="hidden" name="action" value="supprimer">
               <h3 class="mb-3"><i class="bi bi-trash"></i> Supprimer mon compte</h3>
               <?php if (isset($erreursSuppression['general'])): ?>

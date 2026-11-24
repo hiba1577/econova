@@ -12,7 +12,7 @@ $erreurs = [];
 $valeurs = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifierPost();
+    verifierFormulaire();
     $valeurs = $_POST;
     $erreurs = $utilisateurController->valider($_POST);
 
@@ -47,7 +47,7 @@ include __DIR__ . '/includes/header.php';
         <div class="row justify-content-center">
           <div class="col-lg-8">
             <form method="post" action="inscription.php" class="formulaire-vivora" novalidate>
-              <?= champCsrf() ?>
+              <?= champJeton() ?>
 
               <h3 class="mb-3">Mes informations</h3>
               <div class="row">

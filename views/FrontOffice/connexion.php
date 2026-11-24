@@ -11,7 +11,7 @@ $erreurs = [];
 $email = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifierPost();
+    verifierFormulaire();
     $email = trim($_POST['email'] ?? '');
     $motDePasse = $_POST['mot_de_passe'] ?? '';
 
@@ -30,7 +30,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($utilisateur['statut'] === 'bloque') {
             $erreurs['general'] = 'Votre compte est bloqué. Contactez l\'administrateur de Vivora.';
         } else {
-            connecterUtilisateur($utilisateur);
+            session_regenerate_id(true);
+            $_SESSION['user'] = [
+                'id' => $utilisateur['id'],
+                'nom' => $utilisateur['nom'],
+                'prenom' => $utilisateur['prenom'],
+                'email' => $utilisateur['email'],
+                'role' => $utilisateur['role']
+            ];
             $_SESSION['message'] = 'Bienvenue ' . $utilisateur['prenom'] . ' !';
             if ($utilisateur['role'] === 'admin') {
                 header('Location: ../BackOffice/dashboard.php');
@@ -53,7 +60,7 @@ include __DIR__ . '/includes/header.php';
         <div class="row justify-content-center">
           <div class="col-lg-5 col-md-8">
             <form method="post" action="connexion.php" class="formulaire-vivora" novalidate>
-              <?= champCsrf() ?>
+              <?= champJeton() ?>
               <?php if (isset($erreurs['general'])): ?>
                 <div class="alert alert-danger"><?= htmlspecialchars($erreurs['general']) ?></div>
               <?php endif; ?>

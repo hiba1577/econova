@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../session.php';
 require_once __DIR__ . '/../../controllers/UtilisateurController.php';
 
-requireRole('admin');
+exigerAdmin();
 
 $utilisateurController = new UtilisateurController();
 
@@ -40,7 +40,7 @@ include __DIR__ . '/includes/header.php';
                 <a href="utilisateur-modifier.php?id=<?= $id ?>" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i> Modifier</a>
                 <?php if (!$moiMeme): ?>
                   <form method="post" action="utilisateur-statut.php">
-                    <?= champCsrf() ?>
+                    <?= champJeton() ?>
                     <input type="hidden" name="id" value="<?= $id ?>">
                     <?php if ($utilisateur['statut'] === 'actif'): ?>
                       <input type="hidden" name="statut" value="bloque">
@@ -51,7 +51,7 @@ include __DIR__ . '/includes/header.php';
                     <?php endif; ?>
                   </form>
                   <form method="post" action="utilisateur-supprimer.php" onsubmit="return confirm('Supprimer cet utilisateur ?');">
-                    <?= champCsrf() ?>
+                    <?= champJeton() ?>
                     <input type="hidden" name="id" value="<?= $id ?>">
                     <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Supprimer</button>
                   </form>

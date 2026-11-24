@@ -57,10 +57,10 @@ $connecte = estConnecte();
             <li><a href="#">Autres modules</a></li>
             <?php if ($connecte): ?>
               <li><a href="mon-profil.php" class="<?= $pageActive === 'profil' ? 'active' : '' ?>">Mon profil</a></li>
-              <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+              <?php if (estAdmin()): ?>
                 <li><a href="../BackOffice/dashboard.php">Back office</a></li>
               <?php endif; ?>
-              <li><a href="deconnexion.php?jeton=<?= htmlspecialchars(getCsrfToken()) ?>">Déconnexion</a></li>
+              <li><a href="deconnexion.php?jeton=<?= creerJeton() ?>">Déconnexion</a></li>
             <?php else: ?>
               <li><a href="connexion.php" class="<?= $pageActive === 'connexion' ? 'active' : '' ?>">Connexion</a></li>
               <li><a href="inscription.php" class="<?= $pageActive === 'inscription' ? 'active' : '' ?>">Inscription</a></li>
