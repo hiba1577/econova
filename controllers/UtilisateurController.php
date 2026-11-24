@@ -42,6 +42,7 @@ class UtilisateurController
         }
     }
 
+    // Le mot de passe arrive déjà haché par la vue
     public function Create(Utilisateur $utilisateur)
     {
         $sql = 'INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, telephone, role, statut)
@@ -68,19 +69,27 @@ class UtilisateurController
     public function Update(Utilisateur $utilisateur, $id)
     {
         $sql = 'UPDATE utilisateur SET nom = :nom, prenom = :prenom, email = :email,
-                telephone = :telephone, role = :role, statut = :statut WHERE id = :id';
+                telephone = :telephone, role = :role, statut = :statut';
+        $params = [
+            'id' => $id,
+            'nom' => $utilisateur->getNom(),
+            'prenom' => $utilisateur->getPrenom(),
+            'email' => $utilisateur->getEmail(),
+            'telephone' => $utilisateur->getTelephone(),
+            'role' => $utilisateur->getRole(),
+            'statut' => $utilisateur->getStatut()
+        ];
+        // Changer le mot de passe seulement s'il est rempli (déjà haché)
+        if ($utilisateur->getMotDePasse() != '') {
+            $sql .= ', mot_de_passe = :mot_de_passe';
+            $params['mot_de_passe'] = $utilisateur->getMotDePasse();
+        }
+        $sql .= ' WHERE id = :id';
+
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
-            $query->execute([
-                'id' => $id,
-                'nom' => $utilisateur->getNom(),
-                'prenom' => $utilisateur->getPrenom(),
-                'email' => $utilisateur->getEmail(),
-                'telephone' => $utilisateur->getTelephone(),
-                'role' => $utilisateur->getRole(),
-                'statut' => $utilisateur->getStatut()
-            ]);
+            $query->execute($params);
             return true;
         } catch (Exception $e) {
             echo 'Error ' . $e->getMessage();
