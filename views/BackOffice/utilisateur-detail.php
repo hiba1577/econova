@@ -50,6 +50,12 @@ include __DIR__ . '/includes/header.php';
                       <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-unlock"></i> Réactiver</button>
                     <?php endif; ?>
                   </form>
+                  <form method="post" action="utilisateur-role.php">
+                    <?= champJeton() ?>
+                    <input type="hidden" name="id" value="<?= $id ?>">
+                    <input type="hidden" name="role" value="<?= $utilisateur['role'] === 'admin' ? 'utilisateur' : 'admin' ?>">
+                    <button type="submit" class="btn btn-sm btn-dark"><i class="bi bi-shield"></i> <?= $utilisateur['role'] === 'admin' ? 'Retirer le rôle admin' : 'Rendre admin' ?></button>
+                  </form>
                   <form method="post" action="utilisateur-supprimer.php" onsubmit="return confirm('Supprimer cet utilisateur ?');">
                     <?= champJeton() ?>
                     <input type="hidden" name="id" value="<?= $id ?>">

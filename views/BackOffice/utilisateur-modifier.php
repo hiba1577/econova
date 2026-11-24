@@ -28,6 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $valeurs = array_merge($valeurs, $donnees);
     $changerMdp = ($donnees['mot_de_passe'] ?? '') !== '';
     $erreurs = $utilisateurController->validerUtilisateur($donnees, $id, $changerMdp);
+    $retireAdmin = ($donnees['role'] ?? '') !== 'admin' || ($donnees['statut'] ?? '') !== 'actif';
+    if ($retireAdmin && $utilisateurController->estDernierAdmin($utilisateur)) {
+        $erreurs['role'] = 'Il doit toujours rester au moins un administrateur.';
+    }
 
     if (empty($erreurs)) {
         $modifie = new Utilisateur(

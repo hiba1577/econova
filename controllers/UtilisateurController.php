@@ -139,6 +139,37 @@ class UtilisateurController
         }
     }
 
+    public function changerRole($id, $role)
+    {
+        $db = config::getConnexion();
+        try {
+            $query = $db->prepare('UPDATE utilisateur SET role = :role WHERE id = :id');
+            $query->execute(['id' => $id, 'role' => $role]);
+            return true;
+        } catch (Exception $e) {
+            echo 'Error ' . $e->getMessage();
+            return false;
+        }
+    }
+
+    // Nombre d'admins actifs : il doit toujours en rester au moins un
+    public function compterAdmins()
+    {
+        $db = config::getConnexion();
+        try {
+            return $db->query("SELECT COUNT(*) FROM utilisateur WHERE role = 'admin' AND statut = 'actif'")->fetchColumn();
+        } catch (Exception $e) {
+            echo 'Error ' . $e->getMessage();
+            return 0;
+        }
+    }
+
+    // Vrai si on retire le dernier admin actif (suppression, blocage ou changement de rôle)
+    public function estDernierAdmin($utilisateur)
+    {
+        return $utilisateur['role'] === 'admin' && $utilisateur['statut'] === 'actif' && $this->compterAdmins() <= 1;
+    }
+
     public function verifierConnexion($email, $motDePasse)
     {
         $utilisateur = $this->getUtilisateurByEmail($email);
