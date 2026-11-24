@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 trim($_POST['nom']),
                 trim($_POST['prenom']),
                 trim($_POST['email']),
-                $utilisateur['mot_de_passe'],
+                '',
                 trim($_POST['telephone']),
                 $utilisateur['role'],
                 $utilisateur['statut']

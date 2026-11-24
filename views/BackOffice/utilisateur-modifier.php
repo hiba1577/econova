@@ -35,15 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             trim($donnees['nom']),
             trim($donnees['prenom']),
             trim($donnees['email']),
-            $utilisateur['mot_de_passe'],
+            $changerMdp ? password_hash($donnees['mot_de_passe'], PASSWORD_DEFAULT) : '',
             trim($donnees['telephone']),
             $donnees['role'],
             $donnees['statut']
         );
         $utilisateurController->Update($modifie, $id);
-        if ($changerMdp) {
-            $utilisateurController->changerMotDePasse($id, $donnees['mot_de_passe']);
-        }
         if ($moiMeme) {
             $_SESSION['user']['nom'] = $modifie->getNom();
             $_SESSION['user']['prenom'] = $modifie->getPrenom();
