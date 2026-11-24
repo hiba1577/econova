@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/config.php';
 
 // Démarrer une session sécurisée (cookie inaccessible au JavaScript)
 if (session_status() === PHP_SESSION_NONE) {
@@ -38,6 +39,19 @@ function exigerConnexion()
         header('Location: ../FrontOffice/connexion.php');
         exit;
     }
+
+    // Relire le compte en base : il a pu être bloqué, supprimé ou changer de rôle
+    $query = config::getConnexion()->prepare('SELECT role, statut FROM utilisateur WHERE id = :id');
+    $query->execute(['id' => $_SESSION['user']['id']]);
+    $compte = $query->fetch();
+    if (!$compte || $compte['statut'] === 'bloque') {
+        fermerSession();
+        session_start();
+        $_SESSION['erreur'] = 'Votre compte n\'est plus accessible. Contactez l\'administrateur.';
+        header('Location: ../FrontOffice/connexion.php');
+        exit;
+    }
+    $_SESSION['user']['role'] = $compte['role'];
 }
 
 // Vérifier que l'utilisateur est admin, sinon erreur 403
