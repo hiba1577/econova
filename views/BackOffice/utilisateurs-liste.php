@@ -28,7 +28,7 @@ include __DIR__ . '/includes/header.php';
             <h3 class="card-title">Rechercher, filtrer et trier</h3>
           </div>
           <div class="card-body">
-            <form method="get" action="utilisateurs-liste.php" class="row g-3 align-items-end">
+            <form method="get" action="utilisateurs-liste.php" class="row g-3 align-items-end" novalidate>
               <div class="col-md-4">
                 <label for="recherche" class="form-label">Recherche</label>
                 <input type="text" id="recherche" name="recherche" class="form-control" placeholder="Nom, prénom ou e-mail" value="<?= htmlspecialchars($recherche) ?>">
@@ -114,6 +114,12 @@ include __DIR__ . '/includes/header.php';
                             <input type="hidden" name="statut" value="actif">
                             <button type="submit" class="btn btn-sm btn-outline-success" title="Réactiver"><i class="bi bi-unlock"></i></button>
                           <?php endif; ?>
+                        </form>
+                        <form method="post" action="utilisateur-role.php" class="d-inline">
+                          <?= champJeton() ?>
+                          <input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
+                          <input type="hidden" name="role" value="<?= $u['role'] === 'admin' ? 'utilisateur' : 'admin' ?>">
+                          <button type="submit" class="btn btn-sm btn-outline-dark" title="<?= $u['role'] === 'admin' ? 'Retirer le rôle admin' : 'Rendre admin' ?>"><i class="bi bi-shield<?= $u['role'] === 'admin' ? '-slash' : '-check' ?>"></i></button>
                         </form>
                         <form method="post" action="utilisateur-supprimer.php" class="d-inline" onsubmit="return confirm('Supprimer cet utilisateur ?');">
                           <?= champJeton() ?>
